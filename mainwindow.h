@@ -19,8 +19,14 @@ private slots:
     void on_comboBox_currentIndexChanged(int index);
     void on_colorButton_clicked();
 
+    void on_fontColorButton_clicked();
+
 private:
     Ui::MainWindow *ui;
+
+    QAction        *m_drawAction;
+    QAction        *m_scissorsAction;
+    QAction        *m_eraseAction;
 
     // QWidget interface
 protected:

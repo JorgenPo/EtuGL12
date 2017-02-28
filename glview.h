@@ -10,6 +10,12 @@
 
 class GLView : public QOpenGLWidget
 {
+    enum State {
+        STATE_DRAW,
+        STATE_SCISSORS,
+        STATE_ERASE
+    };
+
 public:
     explicit GLView(QWidget *parent = nullptr);
 
@@ -18,7 +24,9 @@ public:
 public slots:
     void setPrimitiveType(int type);
     void clearVertices();
+
     void setColor(const QColor&);
+    void setBackgroundColor(const QColor&);
 
     // QOpenGLWidget interface
 protected:
@@ -30,9 +38,12 @@ private:
     std::unique_ptr<Mesh> m_vMesh;
     std::unique_ptr<std::vector<Vertex>> m_vertices;
 
-    int m_primitiveType;
+    int    m_primitiveType;
 
     QColor m_currentColor;
+    QColor m_backgroundColor;
+
+    State  m_state = State::STATE_DRAW;
 
     // QWidget interface
 protected:

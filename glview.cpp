@@ -5,7 +5,7 @@
 
 GLView::GLView(QWidget *parent) : QOpenGLWidget(parent),
     m_vMesh(), m_vertices(), m_primitiveType(1),
-    m_currentColor()
+    m_currentColor(), m_backgroundColor()
 {
    m_vMesh = std::make_unique<Mesh>(nullptr, QOpenGLBuffer::DynamicDraw);
 
@@ -19,7 +19,8 @@ GLView::GLView(QWidget *parent) : QOpenGLWidget(parent),
 
    this->setFormat(format);
 
-   m_currentColor = QColor("black");
+   m_currentColor = Qt::black;
+   m_backgroundColor = Qt::white;
 }
 
 GLView::~GLView()
@@ -52,6 +53,15 @@ void GLView::setColor(const QColor &color)
     }
 }
 
+void GLView::setBackgroundColor(const QColor &color)
+{
+    if ( !color.isValid() ) {
+        m_backgroundColor = Qt::black;
+    } else {
+        m_backgroundColor = color;
+    }
+}
+
 void GLView::initializeGL()
 {
 
@@ -64,7 +74,11 @@ void GLView::resizeGL(int w, int h)
 
 void GLView::paintGL()
 {
-    glClearColor(0.3f, 1.0f, 0.5f, 1.0f);
+    glClearColor(m_backgroundColor.redF(),
+                 m_backgroundColor.greenF(),
+                 m_backgroundColor.blueF(),
+                 m_backgroundColor.alphaF());
+
     glClear(GL_COLOR_BUFFER_BIT);
 
     glLoadIdentity();

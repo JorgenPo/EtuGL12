@@ -18,6 +18,7 @@ public:
 public slots:
     void setPrimitiveType(int type);
     void clearVertices();
+    void setColor(const QColor&);
 
     // QOpenGLWidget interface
 protected:
@@ -30,6 +31,8 @@ private:
     std::unique_ptr<std::vector<Vertex>> m_vertices;
 
     int m_primitiveType;
+
+    QColor m_currentColor;
 
     // QWidget interface
 protected:

@@ -1,27 +1,25 @@
 #include "glview.h"
 
+#include <QColorDialog>
 #include <QMouseEvent>
 
 GLView::GLView(QWidget *parent) : QOpenGLWidget(parent),
-    m_vMesh(), m_vertices(), m_primitiveType(1)
+    m_vMesh(), m_vertices(), m_primitiveType(1),
+    m_currentColor()
 {
    m_vMesh = std::make_unique<Mesh>(nullptr, QOpenGLBuffer::DynamicDraw);
 
 
-   m_vertices = std::make_unique< std::vector<Vertex> >(4);
-
-   m_vertices->at(0) = {0.3f, 1.0f};
-   m_vertices->at(1) = {0.0f, 0.4f};
-   m_vertices->at(2) = {0.5f, 0.3f};
-   m_vertices->at(3) = {0.4f, 0.1f};
-
-   m_vMesh->setData(*(m_vertices.get()));
+   m_vertices = std::make_unique< std::vector<Vertex> >(20);
+   m_vMesh->setData(*m_vertices.get());
 
    QSurfaceFormat format;
    format.setVersion(1, 5);
    format.setSamples(16);
 
    this->setFormat(format);
+
+   m_currentColor = QColor("black");
 }
 
 GLView::~GLView()
@@ -43,6 +41,15 @@ void GLView::setPrimitiveType(int type)
 void GLView::clearVertices()
 {
     m_vertices->clear();
+}
+
+void GLView::setColor(const QColor &color)
+{
+    if ( !color.isValid() ) {
+        m_currentColor = Qt::black;
+    } else {
+        m_currentColor = color;
+    }
 }
 
 void GLView::initializeGL()
@@ -84,7 +91,7 @@ void GLView::mousePressEvent(QMouseEvent *event)
     x =  2 * x / static_cast<float>(this->size().width()) - 1.0f;
     y =  2 * -y / static_cast<float>(this->size().height()) + 1.0f;
 
-    m_vertices->push_back({x, y});
+    m_vertices->push_back({x, y, 0.0f, m_currentColor});
 }
 
 void GLView::keyPressEvent(QKeyEvent *event)

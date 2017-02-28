@@ -3,6 +3,7 @@
 
 #include <QKeyEvent>
 #include <QDebug>
+#include <QColorDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -23,6 +24,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->openGLWidget, SIGNAL(frameSwapped()),
             ui->openGLWidget, SLOT(update()));
+
+    ui->colorButton->setPalette(Qt::black);
+    ui->colorButton->setAutoFillBackground(true);
 }
 
 MainWindow::~MainWindow()
@@ -49,3 +53,16 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
 }
 
+
+// Color button clicked
+void MainWindow::on_colorButton_clicked()
+{
+    QColor color = QColorDialog::getColor(
+                Qt::black, this, tr("Выберите цвет точек"),
+                QColorDialog::ShowAlphaChannel |
+                QColorDialog::DontUseNativeDialog);
+
+    ui->colorButton->setPalette(QPalette(color));
+
+    ui->openGLWidget->setColor(color);
+}

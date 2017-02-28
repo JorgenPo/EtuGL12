@@ -38,9 +38,13 @@ Mesh::Mesh(std::vector<Vertex> *vertices, QOpenGLBuffer::UsagePattern usage)
  */
 void Mesh::render(int offset, int count)
 {
-    glColor3f(0.0f,0.0f,0.0f);
-    for ( const auto &vertex : *m_data ) {
-        glVertex3f(vertex.getX(), vertex.getY(), vertex.getZ());
+    if ( m_data ) {
+        for ( const auto &vertex : *m_data ) {
+            glColor4f(vertex.getR(), vertex.getG(),
+                      vertex.getB(), vertex.getA());
+
+            glVertex3f(vertex.getX(), vertex.getY(), vertex.getZ());
+        }
     }
 }
 

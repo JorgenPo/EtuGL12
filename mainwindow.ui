@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>678</width>
-    <height>439</height>
+    <width>761</width>
+    <height>495</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,10 +29,7 @@
       <property name="title">
        <string>Настройки</string>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <property name="spacing">
-        <number>4</number>
-       </property>
+      <layout class="QGridLayout" name="gridLayout">
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -45,8 +42,8 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item row="1" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
          <property name="spacing">
           <number>2</number>
          </property>
@@ -62,8 +59,8 @@
          </item>
         </layout>
        </item>
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item row="1" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
          <property name="spacing">
           <number>0</number>
          </property>
@@ -79,6 +76,27 @@
          </item>
         </layout>
        </item>
+       <item row="0" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLabel" name="colorLabel">
+           <property name="text">
+            <string>Цвет</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="colorButton">
+           <property name="autoFillBackground">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
       </layout>
      </widget>
     </item>
@@ -89,7 +107,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>678</width>
+     <width>761</width>
      <height>25</height>
     </rect>
    </property>

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>761</width>
-    <height>495</height>
+    <width>900</width>
+    <height>500</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,195 +21,325 @@
    <bool>true</bool>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <widget class="GLView" name="openGLWidget">
-      <property name="cursor">
-       <cursorShape>CrossCursor</cursorShape>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QGroupBox" name="groupBox">
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>150</height>
-       </size>
-      </property>
-      <property name="title">
-       <string>Настройки</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item row="1" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <property name="spacing">
-          <number>2</number>
-         </property>
-         <item>
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>Тип примитивов</string>
+   <property name="inputMethodHints">
+    <set>Qt::ImhNone</set>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_5">
+    <item row="0" column="0">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="maximumSize">
+         <size>
+          <width>270</width>
+          <height>150</height>
+         </size>
+        </property>
+        <property name="title">
+         <string>Настройки</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <property name="spacing">
+            <number>6</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>4</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Тип примитивов</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="comboPrimitive"/>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox_2">
+        <property name="maximumSize">
+         <size>
+          <width>270</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="cursor">
+         <cursorShape>OpenHandCursor</cursorShape>
+        </property>
+        <property name="title">
+         <string>Цвет</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="0" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>4</number>
+           </property>
+           <item>
+            <widget class="QPushButton" name="colorButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="cursor">
+              <cursorShape>OpenHandCursor</cursorShape>
+             </property>
+             <property name="autoFillBackground">
+              <bool>true</bool>
+             </property>
+             <property name="text">
+              <string>Вершины</string>
+             </property>
+             <property name="flat">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="fontColorButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="autoFillBackground">
+              <bool>true</bool>
+             </property>
+             <property name="text">
+              <string>Фона</string>
+             </property>
+             <property name="flat">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox_3">
+        <property name="maximumSize">
+         <size>
+          <width>270</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="title">
+         <string>Тест смешивания</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QLabel" name="label_2">
+             <property name="maximumSize">
+              <size>
+               <width>44</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>S-Factor</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="comboSFactor"/>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <widget class="QLabel" name="label_3">
+             <property name="maximumSize">
+              <size>
+               <width>44</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>D-Factor</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="comboDFactor"/>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox_4">
+        <property name="maximumSize">
+         <size>
+          <width>270</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="title">
+         <string>Тест прозрачности</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="0" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <item>
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Функция</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="comboAlpha"/>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="0">
+          <widget class="QSlider" name="sliderAlpha">
+           <property name="maximum">
+            <number>100</number>
+           </property>
+           <property name="value">
+            <number>0</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
            </property>
           </widget>
          </item>
-         <item>
-          <widget class="QComboBox" name="comboBox"/>
-         </item>
         </layout>
-       </item>
-       <item row="0" column="0">
-        <widget class="QGroupBox" name="groupBox_2">
-         <property name="cursor">
-          <cursorShape>OpenHandCursor</cursorShape>
-         </property>
-         <property name="title">
-          <string/>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_5">
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>4</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="colorLabel">
-              <property name="text">
-               <string>Цвет</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="colorButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="cursor">
-               <cursorShape>OpenHandCursor</cursorShape>
-              </property>
-              <property name="autoFillBackground">
-               <bool>true</bool>
-              </property>
-              <property name="text">
-               <string>Вершины</string>
-              </property>
-              <property name="flat">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="fontColorButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="autoFillBackground">
-               <bool>true</bool>
-              </property>
-              <property name="text">
-               <string>Фона</string>
-              </property>
-              <property name="flat">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-         <zorder>colorLabel</zorder>
-         <zorder>horizontalLayoutWidget</zorder>
-        </widget>
-       </item>
-       <item row="0" column="1" rowspan="2">
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="2" column="1">
-          <widget class="QRadioButton" name="radioButton_3">
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox_5">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>121</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>270</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="title">
+         <string>Тест отсечения</string>
+        </property>
+        <layout class="QFormLayout" name="formLayout">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_5">
            <property name="text">
-            <string/>
+            <string>X = </string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QRadioButton" name="radioButton_2">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>Отсечение</string>
-           </property>
-          </widget>
+          <widget class="QSpinBox" name="scissorX"/>
          </item>
          <item row="1" column="0">
-          <widget class="QLabel" name="label_3">
+          <widget class="QLabel" name="label_6">
            <property name="text">
-            <string>Тест смешивания</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Тест прозрачности</string>
+            <string>Y = </string>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QRadioButton" name="radioButton">
+          <widget class="QSpinBox" name="scissorY"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_7">
            <property name="text">
-            <string/>
+            <string>Width</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="2">
-          <widget class="QComboBox" name="comboBox_2"/>
+         <item row="2" column="1">
+          <widget class="QSpinBox" name="scissorWidth"/>
          </item>
-         <item row="1" column="2">
-          <widget class="QComboBox" name="comboBox_3"/>
-         </item>
-         <item row="2" column="2">
-          <widget class="QComboBox" name="comboBox_4">
-           <property name="enabled">
-            <bool>false</bool>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_8">
+           <property name="text">
+            <string>Height</string>
            </property>
-           <property name="cursor">
-            <cursorShape>ForbiddenCursor</cursorShape>
-           </property>
-           <item>
-            <property name="text">
-             <string>GL_SCISSOR_TEST</string>
-            </property>
-           </item>
           </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QSpinBox" name="scissorHeight"/>
          </item>
         </layout>
-       </item>
-      </layout>
+        <zorder>label_8</zorder>
+        <zorder>label_6</zorder>
+        <zorder>label_5</zorder>
+        <zorder>label_7</zorder>
+        <zorder>scissorHeight</zorder>
+        <zorder>scissorX</zorder>
+        <zorder>scissorWidth</zorder>
+        <zorder>label_6</zorder>
+        <zorder>label_5</zorder>
+        <zorder>label_7</zorder>
+        <zorder>label_8</zorder>
+        <zorder>scissorY</zorder>
+        <zorder>scissorY</zorder>
+        <zorder>scissorX</zorder>
+        <zorder>scissorWidth</zorder>
+        <zorder>label_6</zorder>
+        <zorder>scissorHeight</zorder>
+        <zorder>label_5</zorder>
+        <zorder>label_7</zorder>
+        <zorder>label_8</zorder>
+        <zorder>scissorY</zorder>
+        <zorder>scissorX</zorder>
+        <zorder>scissorWidth</zorder>
+        <zorder>label_6</zorder>
+        <zorder>scissorHeight</zorder>
+        <zorder>label_5</zorder>
+        <zorder>label_7</zorder>
+        <zorder>label_8</zorder>
+       </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="1">
+     <widget class="GLView" name="openGLWidget">
+      <property name="cursor">
+       <cursorShape>CrossCursor</cursorShape>
+      </property>
      </widget>
     </item>
    </layout>
@@ -219,8 +349,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>761</width>
-     <height>25</height>
+     <width>900</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -239,7 +369,7 @@
     <enum>LeftToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>false</bool>
+    <bool>true</bool>
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>

@@ -55,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     /* Default */
     m_drawAction->setChecked(true);
+
 }
 
 MainWindow::~MainWindow()

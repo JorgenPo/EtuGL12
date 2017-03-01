@@ -4,4 +4,7 @@
         <file alias="icon_draw.svg">images/002-pencil.svg</file>
         <file alias="icon_scissors.svg">images/003-scissors.svg</file>
     </qresource>
+    <qresource prefix="/">
+        <file>images/pencil.svg</file>
+    </qresource>
 </RCC>

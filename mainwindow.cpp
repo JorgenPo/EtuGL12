@@ -68,6 +68,12 @@ MainWindow::MainWindow(QWidget *parent) :
     m_scissorsAction = new QAction (QIcon(":/images/icon_scissors.svg"), tr(""), this);
     m_eraseAction    = new QAction (QIcon(":/images/icon_erase.svg"),    tr(""), this);
 
+    m_toolBarActionGroup = new QActionGroup(this);
+    m_toolBarActionGroup->addAction(m_drawAction);
+    m_toolBarActionGroup->addAction(m_scissorsAction);
+    m_toolBarActionGroup->addAction(m_eraseAction);
+    m_toolBarActionGroup->setExclusive(true);
+
     ui->mainToolBar->insertAction(nullptr, m_drawAction);
     ui->mainToolBar->insertAction(nullptr, m_scissorsAction);
     ui->mainToolBar->insertAction(nullptr, m_eraseAction);
@@ -89,6 +95,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->comboAlpha->setCurrentIndex(7);
 
+    connect(m_drawAction, SIGNAL(changed()), this, SLOT(setDrawState()));
+    connect(m_scissorsAction, SIGNAL(toggled(bool)), this, SLOT(setScissorState()));
 }
 
 MainWindow::~MainWindow()
@@ -184,4 +192,32 @@ void MainWindow::on_comboDFactor_currentIndexChanged(int index)
     int value = ui->comboDFactor->itemData(index).toInt();
 
     ui->openGLWidget->setBlendingDfactor(value);
+}
+
+void MainWindow::setDrawState()
+{
+    ui->openGLWidget->setDrawState();
+    m_drawAction->setChecked(true);
+
+}
+
+void MainWindow::setScissorState()
+{
+    ui->openGLWidget->setScissorState();
+
+    m_scissorsAction->setChecked(true);
+}
+
+void MainWindow::setEraseState()
+{
+    ui->openGLWidget->setEraseState();
+
+    m_eraseAction->setChecked(true);
+}
+
+void MainWindow::disableMenuItems()
+{
+    m_drawAction->setChecked(false);
+    m_scissorsAction->setChecked(false);
+    m_eraseAction->setChecked(false);
 }

@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QActionGroup>
 #include <QMainWindow>
 
 namespace Ui {
@@ -20,6 +21,9 @@ private slots:
     void on_colorButton_clicked();
 
     void on_fontColorButton_clicked();
+    void setDrawState();
+    void setScissorState();
+    void setEraseState();
 
     void on_comboAlpha_currentIndexChanged(int index);
 
@@ -34,10 +38,12 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
+    QActionGroup   *m_toolBarActionGroup;
     QAction        *m_drawAction;
     QAction        *m_scissorsAction;
     QAction        *m_eraseAction;
 
+    void disableMenuItems();
     // QWidget interface
 protected:
     void keyPressEvent(QKeyEvent *event);

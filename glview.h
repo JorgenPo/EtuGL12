@@ -27,6 +27,9 @@ public slots:
 
     void setColor(const QColor&);
     void setBackgroundColor(const QColor&);
+    void setDrawState();
+    void setScissorState();
+    void setEraseState();
 
     void setAlphaTestEnabled(bool enabled);
     void setBlendingEnabled(bool enabled);
@@ -53,6 +56,9 @@ private:
     QColor m_backgroundColor;
 
     State  m_state = State::STATE_DRAW;
+    void stateChanged(State state);
+    void disableStates();
+    void scissorTest(bool enabled, float x = 0, float y = 0, float width = 100, float height = 100);
 
     bool   m_alphaTestEnabled = false;
     bool   m_blendingEnabled  = false;

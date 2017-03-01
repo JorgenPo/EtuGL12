@@ -2,6 +2,7 @@
 
 #include <QColorDialog>
 #include <QMouseEvent>
+#include <QDebug>
 
 GLView::GLView(QWidget *parent) : QOpenGLWidget(parent),
     m_vMesh(), m_vertices(), m_primitiveType(1),
@@ -110,6 +111,26 @@ void GLView::setBlendingDfactor(int d)
     }
 }
 
+void GLView::setDrawState()
+{
+    m_state = STATE_DRAW;
+    disableStates();
+    qDebug() << "DRAW" << "\n";
+}
+
+void GLView::setScissorState()
+{
+    m_state = STATE_SCISSORS;
+    disableStates();
+    qDebug() << "SCISSOR" << "\n";
+}
+
+void GLView::setEraseState()
+{
+    m_state = STATE_ERASE;
+    disableStates();
+}
+
 void GLView::initializeGL()
 {
 
@@ -160,6 +181,21 @@ void GLView::paintGL()
 
     if ( m_blendingEnabled ) {
         glDisable(GL_BLEND);
+    }
+}
+
+void GLView::disableStates()
+{
+    scissorTest(false);
+}
+
+void GLView::scissorTest(bool enabled, float x, float y, float width, float height)
+{
+    if ( enabled ) {
+        glEnable(GL_SCISSOR_TEST);
+        glScissor(x, y, width, height);
+    } else {
+        glDisable(GL_SCISSOR_TEST);
     }
 }
 

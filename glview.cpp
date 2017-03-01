@@ -62,6 +62,54 @@ void GLView::setBackgroundColor(const QColor &color)
     }
 }
 
+void GLView::setAlphaTestEnabled(bool enabled)
+{
+    m_alphaTestEnabled = enabled;
+}
+
+void GLView::setBlendingEnabled(bool enabled)
+{
+    m_blendingEnabled = enabled;
+}
+
+void GLView::setAlphaFunction(int function)
+{
+    m_alphaFunc = function;
+}
+
+void GLView::setAlphaRef(float ref)
+{
+    if ( ref < 0.0f || ref > 1.0f ) {
+        return;
+    }
+
+    m_alphaRef = ref;
+}
+
+void GLView::setBlendingSfactor(int s)
+{
+    m_blendingSfactor = s;
+
+    if ( m_blendingSfactor == GL_ZERO &&
+         m_blendingDfactor == GL_ZERO ) {
+        setBlendingEnabled(false);
+    } else {
+        setBlendingEnabled(true);
+    }
+}
+
+void GLView::setBlendingDfactor(int d)
+{
+    m_blendingDfactor = d;
+
+    if ( m_blendingSfactor == GL_ZERO &&
+         m_blendingDfactor == GL_ZERO ) {
+        setBlendingEnabled(false);
+    } else {
+        setBlendingEnabled(true);
+    }
+}
+
 void GLView::initializeGL()
 {
 
@@ -90,11 +138,29 @@ void GLView::paintGL()
     }
     glEnd();
 
+    if ( m_alphaTestEnabled ) {
+        glEnable(GL_ALPHA_TEST);
+        glAlphaFunc(m_alphaFunc, m_alphaRef);
+    }
+
+    if ( m_blendingEnabled ) {
+        glEnable(GL_BLEND);
+        glBlendFunc(m_blendingSfactor, m_blendingDfactor);
+    }
+
     glBegin(m_primitiveType);
     {
         m_vMesh->render();
     }
     glEnd();
+
+    if ( m_alphaTestEnabled ) {
+        glDisable(GL_ALPHA_TEST);
+    }
+
+    if ( m_blendingEnabled ) {
+        glDisable(GL_BLEND);
+    }
 }
 
 void GLView::mousePressEvent(QMouseEvent *event)

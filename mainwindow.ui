@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>900</width>
-    <height>500</height>
+    <height>586</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -201,6 +201,22 @@
          <string>Тест прозрачности</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_4">
+         <item row="1" column="0">
+          <widget class="QSlider" name="sliderAlpha">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="maximum">
+            <number>100</number>
+           </property>
+           <property name="value">
+            <number>0</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
          <item row="0" column="0">
           <layout class="QHBoxLayout" name="horizontalLayout_5">
            <item>
@@ -215,16 +231,13 @@
            </item>
           </layout>
          </item>
-         <item row="1" column="0">
-          <widget class="QSlider" name="sliderAlpha">
+         <item row="1" column="1">
+          <widget class="QDoubleSpinBox" name="spinAlpha">
            <property name="maximum">
-            <number>100</number>
+            <double>1.000000000000000</double>
            </property>
-           <property name="value">
-            <number>0</number>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+           <property name="singleStep">
+            <double>0.010000000000000</double>
            </property>
           </widget>
          </item>
@@ -290,26 +303,6 @@
           <widget class="QSpinBox" name="scissorHeight"/>
          </item>
         </layout>
-        <zorder>label_8</zorder>
-        <zorder>label_6</zorder>
-        <zorder>label_5</zorder>
-        <zorder>label_7</zorder>
-        <zorder>scissorHeight</zorder>
-        <zorder>scissorX</zorder>
-        <zorder>scissorWidth</zorder>
-        <zorder>label_6</zorder>
-        <zorder>label_5</zorder>
-        <zorder>label_7</zorder>
-        <zorder>label_8</zorder>
-        <zorder>scissorY</zorder>
-        <zorder>scissorY</zorder>
-        <zorder>scissorX</zorder>
-        <zorder>scissorWidth</zorder>
-        <zorder>label_6</zorder>
-        <zorder>scissorHeight</zorder>
-        <zorder>label_5</zorder>
-        <zorder>label_7</zorder>
-        <zorder>label_8</zorder>
         <zorder>scissorY</zorder>
         <zorder>scissorX</zorder>
         <zorder>scissorWidth</zorder>
@@ -350,7 +343,7 @@
      <x>0</x>
      <y>0</y>
      <width>900</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -369,7 +362,7 @@
     <enum>LeftToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>true</bool>
+    <bool>false</bool>
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>

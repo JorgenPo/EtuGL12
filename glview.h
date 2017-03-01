@@ -28,6 +28,15 @@ public slots:
     void setColor(const QColor&);
     void setBackgroundColor(const QColor&);
 
+    void setAlphaTestEnabled(bool enabled);
+    void setBlendingEnabled(bool enabled);
+
+    void setAlphaFunction(int function);
+    void setAlphaRef(float ref);
+
+    void setBlendingSfactor(int s);
+    void setBlendingDfactor(int d);
+
     // QOpenGLWidget interface
 protected:
     void initializeGL();
@@ -44,6 +53,15 @@ private:
     QColor m_backgroundColor;
 
     State  m_state = State::STATE_DRAW;
+
+    bool   m_alphaTestEnabled = false;
+    bool   m_blendingEnabled  = false;
+
+    int    m_alphaFunc        = GL_ALWAYS;
+    float  m_alphaRef         = 0.0f;
+
+    int    m_blendingSfactor  = GL_ZERO;
+    int    m_blendingDfactor  = GL_ZERO;
 
     // QWidget interface
 protected:

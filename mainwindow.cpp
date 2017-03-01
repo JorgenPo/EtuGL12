@@ -28,6 +28,37 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->openGLWidget, SIGNAL(frameSwapped()),
             ui->openGLWidget, SLOT(update()));
 
+
+    ui->comboAlpha->addItem(tr("GL_NEVER"),    0x0200);
+    ui->comboAlpha->addItem(tr("GL_LESS"),     0x0201);
+    ui->comboAlpha->addItem(tr("GL_EQUAL"),    0x0202);
+    ui->comboAlpha->addItem(tr("GL_LEQUAL"),   0x0203);
+    ui->comboAlpha->addItem(tr("GL_GREATER"),  0x0204);
+    ui->comboAlpha->addItem(tr("GL_NOTEQUAL"), 0x0205);
+    ui->comboAlpha->addItem(tr("GL_GEQUAL"),   0x0206);
+    ui->comboAlpha->addItem(tr("GL_ALWAYS"),   0x0207);
+
+    ui->comboSFactor->addItem(tr("GL_ZERO"),                 0x0000);
+    ui->comboSFactor->addItem(tr("GL_ONE"),                  0x0001);
+    ui->comboSFactor->addItem(tr("GL_SRC_COLOR"),            0x0300);
+    ui->comboSFactor->addItem(tr("GL_ONE_MINUS_SRC_COLOR"),  0x0301);
+    ui->comboSFactor->addItem(tr("GL_SRC_ALPHA"),            0x0302);
+    ui->comboSFactor->addItem(tr("GL_ONE_MINUS_SRC_ALPHA"),  0x0303);
+    ui->comboSFactor->addItem(tr("GL_DST_ALPHA"),            0x0304);
+    ui->comboSFactor->addItem(tr("GL_ONE_MINUS_DST_ALPHA"),  0x0305);
+    ui->comboSFactor->addItem(tr("GL_DST_COLOR"),            0x0306);
+    ui->comboSFactor->addItem(tr("GL_ONE_MINUS_DST_COLOR"),  0x0307);
+    ui->comboSFactor->addItem(tr("GL_SRC_ALPHA_SATURATE"),   0x0308);
+
+    ui->comboDFactor->addItem(tr("GL_ZERO"),                 0x0000);
+    ui->comboDFactor->addItem(tr("GL_ONE"),                  0x0001);
+    ui->comboDFactor->addItem(tr("GL_SRC_COLOR"),            0x0300);
+    ui->comboDFactor->addItem(tr("GL_ONE_MINUS_SRC_COLOR"),  0x0301);
+    ui->comboDFactor->addItem(tr("GL_SRC_ALPHA"),            0x0302);
+    ui->comboDFactor->addItem(tr("GL_ONE_MINUS_SRC_ALPHA"),  0x0303);
+    ui->comboDFactor->addItem(tr("GL_DST_ALPHA"),            0x0304);
+    ui->comboDFactor->addItem(tr("GL_ONE_MINUS_DST_ALPHA"),  0x0305);
+
     ui->colorButton->setPalette(Qt::black);
     ui->fontColorButton->setPalette(Qt::white);
     ui->colorButton->setAutoFillBackground(true);
@@ -55,6 +86,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     /* Default */
     m_drawAction->setChecked(true);
+
+    ui->comboAlpha->setCurrentIndex(7);
 
 }
 
@@ -106,4 +139,49 @@ void MainWindow::on_fontColorButton_clicked()
     ui->fontColorButton->setPalette(QPalette(color));
 
     ui->openGLWidget->setBackgroundColor(color);
+}
+
+void MainWindow::on_comboAlpha_currentIndexChanged(int index)
+{
+    int func = ui->comboAlpha->itemData(index).toInt();
+
+    if ( func == GL_ALWAYS ) {
+        ui->sliderAlpha->setEnabled(false);
+        ui->openGLWidget->setAlphaTestEnabled(false);
+    } else {
+        ui->sliderAlpha->setEnabled(true);
+        ui->openGLWidget->setAlphaTestEnabled(true);
+        ui->openGLWidget->setAlphaFunction(func);
+    }
+
+}
+
+void MainWindow::on_sliderAlpha_sliderMoved(int position)
+{
+    float clampedValue = position / 100.0f;
+
+    ui->openGLWidget->setAlphaRef(clampedValue);
+
+    ui->sliderAlpha->setToolTip(QString("Value = %1").arg(clampedValue));
+
+    ui->spinAlpha->setValue(clampedValue);
+}
+
+void MainWindow::on_spinAlpha_valueChanged(double arg1)
+{
+    ui->sliderAlpha->setValue(arg1 * 100);
+}
+
+void MainWindow::on_comboSFactor_currentIndexChanged(int index)
+{
+    int value = ui->comboSFactor->itemData(index).toInt();
+
+    ui->openGLWidget->setBlendingSfactor(value);
+}
+
+void MainWindow::on_comboDFactor_currentIndexChanged(int index)
+{
+    int value = ui->comboDFactor->itemData(index).toInt();
+
+    ui->openGLWidget->setBlendingDfactor(value);
 }

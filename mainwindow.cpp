@@ -161,9 +161,11 @@ void MainWindow::on_comboAlpha_currentIndexChanged(int index)
 
     if ( func == GL_ALWAYS ) {
         ui->sliderAlpha->setEnabled(false);
+        ui->spinAlpha->setEnabled(false);
         ui->openGLWidget->setAlphaTestEnabled(false);
     } else {
         ui->sliderAlpha->setEnabled(true);
+        ui->spinAlpha->setEnabled(true);
         ui->openGLWidget->setAlphaTestEnabled(true);
         ui->openGLWidget->setAlphaFunction(func);
     }

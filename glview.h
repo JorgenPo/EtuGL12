@@ -11,6 +11,8 @@
 
 class GLView : public QOpenGLWidget
 {
+    Q_OBJECT
+
 public:
 
     enum State {
@@ -21,12 +23,15 @@ public:
 
     explicit GLView(QWidget *parent = nullptr);
 
-    ~GLView();
+    virtual ~GLView();
 
     void setState(const State &state);
 
 private:
     void disableStates();
+
+signals:
+    void scissorsRectChanged(const QRect& rect);
 
 public slots:
     void setPrimitiveType(int type);
@@ -51,6 +56,22 @@ protected:
     void initializeGL();
     void resizeGL(int w, int h);
     void paintGL();
+
+    // QWidget interface
+protected:
+    void mousePressEvent(QMouseEvent *event);
+
+    // QWidget interface
+protected:
+    void keyPressEvent(QKeyEvent *event);
+
+    // QWidget interface
+protected:
+    void mouseMoveEvent(QMouseEvent *event);
+
+    // QWidget interface
+protected:
+    void mouseReleaseEvent(QMouseEvent *event);
 
 private:
     std::unique_ptr<Mesh> m_vMesh;
@@ -78,22 +99,6 @@ private:
     int    m_scissorY         = 0;
     int    m_scissorWidth     = 100;
     int    m_scissorHeight    = 100;
-
-    // QWidget interface
-protected:
-    void mousePressEvent(QMouseEvent *event);
-
-    // QWidget interface
-protected:
-    void keyPressEvent(QKeyEvent *event);
-
-    // QWidget interface
-protected:
-    void mouseMoveEvent(QMouseEvent *event);
-
-    // QWidget interface
-protected:
-    void mouseReleaseEvent(QMouseEvent *event);
 };
 
 #endif // GLVIEW_H

@@ -26,7 +26,7 @@ private slots:
     void on_comboSFactor_currentIndexChanged(int index);
     void on_comboDFactor_currentIndexChanged(int index);
     void setState(QAction* action);
-
+    void onScissorsRectChanged(const QRect&);
 private:
     Ui::MainWindow *ui;
 

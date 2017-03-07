@@ -103,6 +103,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->openGLWidget->setScissorTestEnabled(true, 0, 0,
                                             this->size().width(), this->size().height());
+
+    connect(ui->openGLWidget, SIGNAL(scissorsRectChanged(const QRect&)), this, SLOT(onScissorsRectChanged(const QRect&)));
 }
 
 MainWindow::~MainWindow()
@@ -219,4 +221,12 @@ void MainWindow::setState(QAction *action)
         qDebug() << "Error unknown state: " << state << "\n";
         break;
     }
+}
+
+void MainWindow::onScissorsRectChanged(const QRect& rect)
+{
+    ui->scissorX->setValue(rect.x());
+    ui->scissorY->setValue(rect.y());
+    ui->scissorWidth->setValue(rect.width());
+    ui->scissorHeight->setValue(rect.height());
 }

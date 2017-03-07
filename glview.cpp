@@ -126,6 +126,9 @@ void GLView::resizeGL(int w, int h)
 
 void GLView::paintGL()
 {
+    glEnable(GL_SCISSOR_TEST);
+    glScissor(m_scissorX, m_scissorY, m_scissorWidth, m_scissorHeight);
+
     glClearColor(m_backgroundColor.redF(),
                  m_backgroundColor.greenF(),
                  m_backgroundColor.blueF(),
@@ -141,9 +144,6 @@ void GLView::paintGL()
         glVertex2f(0.0f, 0.0f);
     }
     glEnd();
-
-    glEnable(GL_SCISSOR_TEST);
-    glScissor(m_scissorX, m_scissorY, m_scissorWidth, m_scissorHeight);
 
     if ( m_alphaTestEnabled ) {
         glEnable(GL_ALPHA_TEST);
@@ -257,11 +257,14 @@ void GLView::mouseReleaseEvent(QMouseEvent *event)
     case STATE_DRAW:
         break;
     case STATE_SCISSORS:
+        emit scissorsRectChanged(m_rubberBand->rect());
+
         m_rubberBand->hide();
         setScissorTestEnabled(true,
-                              m_rubberBand->x(), m_rubberBand->y() - m_rubberBand->height(),
-                              m_rubberBand->width(), m_rubberBand->height());
-        qDebug() << "x = " << m_rubberBand->x() << "  y = " << m_rubberBand->y();
+                              m_rubberBand->x(),
+                              this->height() - m_rubberBand->y() - m_rubberBand->height(),
+                              m_rubberBand->width(),
+                              m_rubberBand->height());
         break;
     case STATE_ERASE:
         break;

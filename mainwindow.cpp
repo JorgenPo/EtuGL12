@@ -68,6 +68,10 @@ MainWindow::MainWindow(QWidget *parent) :
     m_scissorsAction = new QAction (QIcon(":/images/icon_scissors.svg"), tr(""), this);
     m_eraseAction    = new QAction (QIcon(":/images/icon_erase.svg"),    tr(""), this);
 
+    m_drawAction->setData(static_cast<int>(GLView::STATE_DRAW));
+    m_scissorsAction->setData(static_cast<int>(GLView::STATE_SCISSORS));
+    m_eraseAction->setData(static_cast<int>(GLView::STATE_ERASE));
+
     m_toolBarActionGroup = new QActionGroup(this);
     m_toolBarActionGroup->addAction(m_drawAction);
     m_toolBarActionGroup->addAction(m_scissorsAction);
@@ -95,8 +99,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->comboAlpha->setCurrentIndex(7);
 
-    connect(m_drawAction, SIGNAL(changed()), this, SLOT(setDrawState()));
-    connect(m_scissorsAction, SIGNAL(toggled(bool)), this, SLOT(setScissorState()));
+    connect(m_toolBarActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(setState(QAction*)));
+
+    ui->openGLWidget->setScissorTestEnabled(true, 0, 0,
+                                            this->size().width(), this->size().height());
 }
 
 MainWindow::~MainWindow()
@@ -194,30 +200,21 @@ void MainWindow::on_comboDFactor_currentIndexChanged(int index)
     ui->openGLWidget->setBlendingDfactor(value);
 }
 
-void MainWindow::setDrawState()
+void MainWindow::setState(QAction *action)
 {
-    ui->openGLWidget->setDrawState();
-    m_drawAction->setChecked(true);
-
-}
-
-void MainWindow::setScissorState()
-{
-    ui->openGLWidget->setScissorState();
-
-    m_scissorsAction->setChecked(true);
-}
-
-void MainWindow::setEraseState()
-{
-    ui->openGLWidget->setEraseState();
-
-    m_eraseAction->setChecked(true);
-}
-
-void MainWindow::disableMenuItems()
-{
-    m_drawAction->setChecked(false);
-    m_scissorsAction->setChecked(false);
-    m_eraseAction->setChecked(false);
+    GLView::State state = static_cast<GLView::State>(action->data().toInt());
+    switch (state) {
+    case GLView::STATE_DRAW:
+        ui->openGLWidget->setState(GLView::STATE_DRAW);
+        break;
+    case GLView::STATE_SCISSORS:
+        ui->openGLWidget->setState(GLView::STATE_SCISSORS);
+        break;
+    case GLView::STATE_ERASE:
+        ui->openGLWidget->setState(GLView::STATE_ERASE);
+        break;
+    default:
+        qDebug() << "Error unknown state: " << state << "\n";
+        break;
+    }
 }

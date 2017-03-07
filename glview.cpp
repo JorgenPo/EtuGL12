@@ -6,33 +6,36 @@
 
 GLView::GLView(QWidget *parent) : QOpenGLWidget(parent),
     m_vMesh(), m_vertices(), m_primitiveType(1),
-    m_currentColor(), m_backgroundColor()
+    m_currentColor(), m_backgroundColor(), m_startPoint(0, 0)
 {
-   m_vMesh = std::make_unique<Mesh>(nullptr, QOpenGLBuffer::DynamicDraw);
+    m_vMesh = std::make_unique<Mesh>(nullptr, QOpenGLBuffer::DynamicDraw);
 
+    m_vertices = std::make_unique< std::vector<Vertex> >(20);
+    m_vMesh->setData(*m_vertices.get());
 
-   m_vertices = std::make_unique< std::vector<Vertex> >(20);
-   m_vMesh->setData(*m_vertices.get());
+    QSurfaceFormat format;
+    format.setVersion(1, 5);
+    format.setSamples(16);
 
-   QSurfaceFormat format;
-   format.setVersion(1, 5);
-   format.setSamples(16);
+    this->setFormat(format);
 
-   this->setFormat(format);
+    m_currentColor = Qt::black;
+    m_backgroundColor = Qt::white;
 
-   m_currentColor = Qt::black;
-   m_backgroundColor = Qt::white;
+    m_rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
+    m_rubberBand->setPalette(QPalette(Qt::blue));
+    m_rubberBand->setStyleSheet("background-color: #F5EEA7;");
 }
 
 GLView::~GLView()
 {
-   if ( m_vMesh ) {
-       m_vMesh.release();
-   }
+    if ( m_vMesh ) {
+        m_vMesh.release();
+    }
 
-   if ( m_vertices ) {
-       m_vertices.release();
-   }
+    if ( m_vertices ) {
+        m_vertices.release();
+    }
 }
 
 void GLView::setPrimitiveType(int type)
@@ -111,26 +114,6 @@ void GLView::setBlendingDfactor(int d)
     }
 }
 
-void GLView::setDrawState()
-{
-    m_state = STATE_DRAW;
-    disableStates();
-    qDebug() << "DRAW" << "\n";
-}
-
-void GLView::setScissorState()
-{
-    m_state = STATE_SCISSORS;
-    disableStates();
-    qDebug() << "SCISSOR" << "\n";
-}
-
-void GLView::setEraseState()
-{
-    m_state = STATE_ERASE;
-    disableStates();
-}
-
 void GLView::initializeGL()
 {
 
@@ -159,6 +142,9 @@ void GLView::paintGL()
     }
     glEnd();
 
+    glEnable(GL_SCISSOR_TEST);
+    glScissor(m_scissorX, m_scissorY, m_scissorWidth, m_scissorHeight);
+
     if ( m_alphaTestEnabled ) {
         glEnable(GL_ALPHA_TEST);
         glAlphaFunc(m_alphaFunc, m_alphaRef);
@@ -182,20 +168,36 @@ void GLView::paintGL()
     if ( m_blendingEnabled ) {
         glDisable(GL_BLEND);
     }
+
+    glDisable(GL_SCISSOR_TEST);
+}
+
+void GLView::setState(const State &state)
+{
+    m_state = state;
+    if ( state == STATE_ERASE ) {
+        disableStates();
+    }
 }
 
 void GLView::disableStates()
 {
-    scissorTest(false);
+    qDebug() << "States disabled.";
+    setScissorTestEnabled(false);
 }
 
-void GLView::scissorTest(bool enabled, float x, float y, float width, float height)
+void GLView::setScissorTestEnabled(bool enabled, int x, int y, int width, int height)
 {
     if ( enabled ) {
-        glEnable(GL_SCISSOR_TEST);
-        glScissor(x, y, width, height);
+        m_scissorX = x;
+        m_scissorY = y;
+        m_scissorWidth = width;
+        m_scissorHeight = height;
     } else {
-        glDisable(GL_SCISSOR_TEST);
+        m_scissorX = 0;
+        m_scissorY = 0;
+        m_scissorWidth = this->size().width();
+        m_scissorHeight = this->size().height();
     }
 }
 
@@ -207,7 +209,20 @@ void GLView::mousePressEvent(QMouseEvent *event)
     x =  2 * x / static_cast<float>(this->size().width()) - 1.0f;
     y =  2 * -y / static_cast<float>(this->size().height()) + 1.0f;
 
-    m_vertices->push_back({x, y, 0.0f, m_currentColor});
+    switch ( m_state ) {
+    case STATE_DRAW:
+        m_vertices->push_back({x, y, 0.0f, m_currentColor});
+        break;
+    case STATE_SCISSORS:
+        m_startPoint = event->pos();
+        m_rubberBand->setGeometry(QRect(m_startPoint, QSize()));
+        m_rubberBand->show();
+        break;
+    case STATE_ERASE:
+        break;
+    default:
+        qDebug() << "Error mousePressEvent, m_state:" << m_state;
+    }
 }
 
 void GLView::keyPressEvent(QKeyEvent *event)
@@ -224,7 +239,33 @@ void GLView::keyPressEvent(QKeyEvent *event)
 
 void GLView::mouseMoveEvent(QMouseEvent *event)
 {
-    if ( event->buttons() == Qt::LeftButton) {
-        this->mousePressEvent(event);
+    switch ( m_state ) {
+    case STATE_DRAW:
+        if ( event->buttons() == Qt::LeftButton) {
+            this->mousePressEvent(event);
+        }
+        break;
+    case STATE_SCISSORS:
+        m_rubberBand->setGeometry(QRect(m_startPoint, event->pos()).normalized());
+        break;
+    }
+}
+
+void GLView::mouseReleaseEvent(QMouseEvent *event)
+{
+    switch ( m_state ) {
+    case STATE_DRAW:
+        break;
+    case STATE_SCISSORS:
+        m_rubberBand->hide();
+        setScissorTestEnabled(true,
+                              m_rubberBand->x(), m_rubberBand->y() - m_rubberBand->height(),
+                              m_rubberBand->width(), m_rubberBand->height());
+        qDebug() << "x = " << m_rubberBand->x() << "  y = " << m_rubberBand->y();
+        break;
+    case STATE_ERASE:
+        break;
+    default:
+        break;
     }
 }

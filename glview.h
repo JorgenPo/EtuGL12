@@ -7,19 +7,26 @@
 
 #include <QOpenGLWidget>
 #include <QOpenGLBuffer>
+#include <QRubberBand>
 
 class GLView : public QOpenGLWidget
 {
+public:
+
     enum State {
         STATE_DRAW,
         STATE_SCISSORS,
         STATE_ERASE
     };
 
-public:
     explicit GLView(QWidget *parent = nullptr);
 
     ~GLView();
+
+    void setState(const State &state);
+
+private:
+    void disableStates();
 
 public slots:
     void setPrimitiveType(int type);
@@ -27,12 +34,11 @@ public slots:
 
     void setColor(const QColor&);
     void setBackgroundColor(const QColor&);
-    void setDrawState();
-    void setScissorState();
-    void setEraseState();
 
     void setAlphaTestEnabled(bool enabled);
     void setBlendingEnabled(bool enabled);
+    void setScissorTestEnabled(bool enabled, int x = 0, int y = 0,
+                               int width = 100, int height = 100);
 
     void setAlphaFunction(int function);
     void setAlphaRef(float ref);
@@ -56,9 +62,6 @@ private:
     QColor m_backgroundColor;
 
     State  m_state = State::STATE_DRAW;
-    void stateChanged(State state);
-    void disableStates();
-    void scissorTest(bool enabled, float x = 0, float y = 0, float width = 100, float height = 100);
 
     bool   m_alphaTestEnabled = false;
     bool   m_blendingEnabled  = false;
@@ -68,6 +71,13 @@ private:
 
     int    m_blendingSfactor  = GL_ZERO;
     int    m_blendingDfactor  = GL_ZERO;
+
+    QRubberBand               *m_rubberBand;
+    QPoint                    m_startPoint;
+    int    m_scissorX         = 0;
+    int    m_scissorY         = 0;
+    int    m_scissorWidth     = 100;
+    int    m_scissorHeight    = 100;
 
     // QWidget interface
 protected:
@@ -80,6 +90,10 @@ protected:
     // QWidget interface
 protected:
     void mouseMoveEvent(QMouseEvent *event);
+
+    // QWidget interface
+protected:
+    void mouseReleaseEvent(QMouseEvent *event);
 };
 
 #endif // GLVIEW_H

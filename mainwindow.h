@@ -19,21 +19,13 @@ public:
 private slots:
     void on_comboBox_currentIndexChanged(int index);
     void on_colorButton_clicked();
-
     void on_fontColorButton_clicked();
-    void setDrawState();
-    void setScissorState();
-    void setEraseState();
-
     void on_comboAlpha_currentIndexChanged(int index);
-
     void on_sliderAlpha_sliderMoved(int position);
-
     void on_spinAlpha_valueChanged(double arg1);
-
     void on_comboSFactor_currentIndexChanged(int index);
-
     void on_comboDFactor_currentIndexChanged(int index);
+    void setState(QAction* action);
 
 private:
     Ui::MainWindow *ui;
@@ -43,7 +35,6 @@ private:
     QAction        *m_scissorsAction;
     QAction        *m_eraseAction;
 
-    void disableMenuItems();
     // QWidget interface
 protected:
     void keyPressEvent(QKeyEvent *event);

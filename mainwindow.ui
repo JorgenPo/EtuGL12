@@ -270,7 +270,11 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QSpinBox" name="scissorX"/>
+          <widget class="QSpinBox" name="scissorX">
+           <property name="maximum">
+            <number>10000</number>
+           </property>
+          </widget>
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label_6">
@@ -280,7 +284,11 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QSpinBox" name="scissorY"/>
+          <widget class="QSpinBox" name="scissorY">
+           <property name="maximum">
+            <number>10000</number>
+           </property>
+          </widget>
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="label_7">
@@ -290,7 +298,11 @@
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QSpinBox" name="scissorWidth"/>
+          <widget class="QSpinBox" name="scissorWidth">
+           <property name="maximum">
+            <number>10000</number>
+           </property>
+          </widget>
          </item>
          <item row="3" column="0">
           <widget class="QLabel" name="label_8">
@@ -300,7 +312,11 @@
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QSpinBox" name="scissorHeight"/>
+          <widget class="QSpinBox" name="scissorHeight">
+           <property name="maximum">
+            <number>10000</number>
+           </property>
+          </widget>
          </item>
         </layout>
         <zorder>scissorY</zorder>
@@ -343,7 +359,7 @@
      <x>0</x>
      <y>0</y>
      <width>900</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -369,6 +385,9 @@
   <action name="clearAction">
    <property name="text">
     <string>Новое полотно</string>
+   </property>
+   <property name="shortcut">
+    <string>F1</string>
    </property>
   </action>
  </widget>

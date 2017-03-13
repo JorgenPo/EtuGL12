@@ -104,7 +104,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->openGLWidget->setScissorTestEnabled(true, 0, 0,
                                             this->size().width(), this->size().height());
 
-    connect(ui->openGLWidget, SIGNAL(scissorsRectChanged(const QRect&)), this, SLOT(onScissorsRectChanged(const QRect&)));
+    connect(ui->openGLWidget, SIGNAL(scissorsRectChanged(const QRubberBand&)), this, SLOT(onScissorsRectChanged(const QRubberBand&)));
+
+    connect(ui->clearAction, SIGNAL(triggered(bool)), ui->openGLWidget, SLOT(clearVertices()));
 }
 
 MainWindow::~MainWindow()
@@ -223,10 +225,10 @@ void MainWindow::setState(QAction *action)
     }
 }
 
-void MainWindow::onScissorsRectChanged(const QRect& rect)
+void MainWindow::onScissorsRectChanged(const QRubberBand& rubberBand)
 {
-    ui->scissorX->setValue(rect.x());
-    ui->scissorY->setValue(rect.y());
-    ui->scissorWidth->setValue(rect.width());
-    ui->scissorHeight->setValue(rect.height());
+    ui->scissorX->setValue(rubberBand.x());
+    ui->scissorY->setValue(rubberBand.y());
+    ui->scissorWidth->setValue(rubberBand.width());
+    ui->scissorHeight->setValue(rubberBand.height());
 }

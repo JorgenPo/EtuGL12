@@ -31,7 +31,7 @@ private:
     void disableStates();
 
 signals:
-    void scissorsRectChanged(const QRect& rect);
+    void scissorsRectChanged(const QRubberBand& rubberBand);
 
 public slots:
     void setPrimitiveType(int type);

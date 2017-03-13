@@ -229,7 +229,7 @@ void GLView::keyPressEvent(QKeyEvent *event)
 {
     switch(event->key()) {
     case Qt::Key_F1:
-        m_vertices->clear();
+        clearVertices();
         break;
     default:
         keyPressEvent(event);
@@ -248,6 +248,10 @@ void GLView::mouseMoveEvent(QMouseEvent *event)
     case STATE_SCISSORS:
         m_rubberBand->setGeometry(QRect(m_startPoint, event->pos()).normalized());
         break;
+    case STATE_ERASE:
+        break;
+    default:
+        break;
     }
 }
 
@@ -257,7 +261,7 @@ void GLView::mouseReleaseEvent(QMouseEvent *event)
     case STATE_DRAW:
         break;
     case STATE_SCISSORS:
-        emit scissorsRectChanged(m_rubberBand->rect());
+        emit scissorsRectChanged(*m_rubberBand);
 
         m_rubberBand->hide();
         setScissorTestEnabled(true,

@@ -93,25 +93,13 @@ void GLView::setAlphaRef(float ref)
 void GLView::setBlendingSfactor(int s)
 {
     m_blendingSfactor = s;
-
-    if ( m_blendingSfactor == GL_ZERO &&
-         m_blendingDfactor == GL_ZERO ) {
-        setBlendingEnabled(false);
-    } else {
-        setBlendingEnabled(true);
-    }
+    setBlendingEnabled(true);
 }
 
 void GLView::setBlendingDfactor(int d)
 {
     m_blendingDfactor = d;
-
-    if ( m_blendingSfactor == GL_ZERO &&
-         m_blendingDfactor == GL_ZERO ) {
-        setBlendingEnabled(false);
-    } else {
-        setBlendingEnabled(true);
-    }
+    setBlendingEnabled(true);
 }
 
 void GLView::initializeGL()

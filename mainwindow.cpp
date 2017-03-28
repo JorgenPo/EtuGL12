@@ -99,6 +99,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->comboAlpha->setCurrentIndex(7);
 
+    ui->comboSFactor->setCurrentIndex(1);
+    ui->comboDFactor->setCurrentIndex(0);
+
+
     connect(m_toolBarActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(setState(QAction*)));
 
     ui->openGLWidget->setScissorTestEnabled(true, 0, 0,

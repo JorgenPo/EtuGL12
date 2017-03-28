@@ -18,7 +18,8 @@ public:
     enum State {
         STATE_DRAW,
         STATE_SCISSORS,
-        STATE_ERASE
+        STATE_ERASE,
+        STATE_SELECT
     };
 
     explicit GLView(QWidget *parent = nullptr);

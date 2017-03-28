@@ -6,5 +6,6 @@
     </qresource>
     <qresource prefix="/">
         <file>images/pencil.svg</file>
+        <file>images/004-select.png</file>
     </qresource>
 </RCC>

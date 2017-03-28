@@ -208,6 +208,8 @@ void GLView::mousePressEvent(QMouseEvent *event)
         break;
     case STATE_ERASE:
         break;
+    case STATE_SELECT:
+        break;
     default:
         qDebug() << "Error mousePressEvent, m_state:" << m_state;
     }
@@ -238,6 +240,8 @@ void GLView::mouseMoveEvent(QMouseEvent *event)
         break;
     case STATE_ERASE:
         break;
+    case STATE_SELECT:
+        break;
     default:
         break;
     }
@@ -259,6 +263,8 @@ void GLView::mouseReleaseEvent(QMouseEvent *event)
                               m_rubberBand->height());
         break;
     case STATE_ERASE:
+        break;
+    case STATE_SELECT:
         break;
     default:
         break;

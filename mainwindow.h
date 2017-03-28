@@ -37,6 +37,7 @@ private:
     QAction        *m_drawAction;
     QAction        *m_scissorsAction;
     QAction        *m_eraseAction;
+    QAction        *m_selectAction;
 
     // QWidget interface
 protected:

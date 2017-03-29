@@ -16,6 +16,8 @@ LFractalizer::~LFractalizer()
 
 void LFractalizer::fractalize(std::vector<Vertex> *vertices)
 {
+    static size_t iterations = 0;
+
     Vertex first;
     Vertex second;
     QVector3D diff;
@@ -34,9 +36,7 @@ void LFractalizer::fractalize(std::vector<Vertex> *vertices)
 
         // Рассчитаем угол наклона вектора
         diff.normalize();
-        qDebug() << QVector3D::dotProduct(diff, {1, 0, 0});
         angle = qAcos(QVector3D::dotProduct(diff, {1, 0, 0}));
-        qDebug() << angle;
 
         sign = 1;
         if ( first.getY() - second.getY() > 0 ) {
@@ -44,7 +44,6 @@ void LFractalizer::fractalize(std::vector<Vertex> *vertices)
         } else {
             alpha = m_alpha + angle;
         }
-        qDebug() << sign;
 
         m_smallVector = QVector3D(qCos(alpha), sign * qSin(alpha), 0.0f) * m_r;
 
@@ -65,7 +64,12 @@ void LFractalizer::fractalize(std::vector<Vertex> *vertices)
         iterator = vertices->begin() + i + 1;
         vertices->insert(iterator, newVertices.begin(), newVertices.end());
         i += 5;
+
+        qDebug() << "Iterations: " << ++iterations;
     }
+
+    qDebug() << "TOTAL: " << iterations;
+    iterations = 0;
 }
 
 IFractalizer::~IFractalizer()

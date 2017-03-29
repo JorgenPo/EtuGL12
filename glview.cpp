@@ -3,6 +3,8 @@
 #include <QColorDialog>
 #include <QMouseEvent>
 #include <QDebug>
+#include <QMatrix4x4>
+#include <QtMath>
 
 GLView::GLView(QWidget *parent) : QOpenGLWidget(parent),
     m_vMesh(), m_vertices(), m_selectedVertices(),
@@ -13,14 +15,10 @@ GLView::GLView(QWidget *parent) : QOpenGLWidget(parent),
     m_vMesh = std::make_unique<Mesh>(nullptr, QOpenGLBuffer::DynamicDraw);
 
     m_vertices = std::make_unique< std::vector<Vertex> >();
-    m_selectedVertices  = std::make_unique< std::vector<Vertex *> >(10);
-    m_copiedVertices    = std::make_unique< std::vector<Vertex> >(10);
+    m_selectedVertices  = std::vector<Vertex*>();
+    m_copiedVertices    = std::vector<Vertex>();
 
     m_vMesh->setData(*m_vertices.get());
-
-    m_vertices->clear();
-    m_selectedVertices->clear();
-    m_copiedVertices->clear();
 
     QSurfaceFormat format;
     format.setVersion(1, 5);
@@ -51,14 +49,6 @@ GLView::~GLView()
     if ( m_fractalizer ) {
         delete m_fractalizer;
     }
-
-    if ( m_selectedVertices ) {
-        m_selectedVertices.release();
-    }
-
-    if ( m_copiedVertices ) {
-        m_copiedVertices.release();
-    }
 }
 
 void GLView::setPrimitiveType(int type)
@@ -69,19 +59,19 @@ void GLView::setPrimitiveType(int type)
 void GLView::clearVertices()
 {
     m_vertices->clear();
-    m_selectedVertices->clear();
+    m_selectedVertices.clear();
 }
 
 void GLView::copyVertices()
 {
     qDebug() << "Ctrl+C";
-    if ( !m_selectedVertices->empty() ) {
-        m_copiedVertices->clear();
+    if ( !m_selectedVertices.empty() ) {
+        m_copiedVertices.clear();
     }
-    for ( Vertex *vertex : *m_selectedVertices ) {
-        m_copiedVertices->push_back({vertex->getX(), vertex->getY(), 0.0f, QColor(Qt::blue)});
+    for ( auto& vertex : m_selectedVertices ) {
+        m_copiedVertices.push_back({ vertex->getPosition(), QColor(Qt::blue) });
     }
-    for ( Vertex vertex : *m_copiedVertices ) {
+    for ( auto& vertex : m_copiedVertices ) {
         qDebug() << "COPY x = " << vertex.getX() << " y = " << vertex.getY();
     }
 }
@@ -89,10 +79,19 @@ void GLView::copyVertices()
 void GLView::pasteVertices()
 {
     qDebug() << "Ctrl+V";
-    for ( Vertex &vertex : *m_copiedVertices ) {
+    for ( auto& vertex : m_copiedVertices ) {
         vertex.setColor(QColor(Qt::green));
         m_vertices->push_back(vertex);
         qDebug() << "PASTE x = " << vertex.getX() << " y = " << vertex.getY();
+    }
+}
+
+void GLView::rotateSelected(float angle)
+{
+    QMatrix4x4 rotation;
+    rotation.rotate(qDegreesToRadians(angle), 0, 0, 1);
+    for ( auto* vertex : m_selectedVertices ) {
+        vertex->setPosition((rotation * QVector4D(vertex->getPosition(), 0.0f)).toVector3D());
     }
 }
 
@@ -197,8 +196,8 @@ void GLView::paintGL()
     }
     glEnd();
 
-    if ( !m_selectedVertices->empty() ) {
-        for ( Vertex *vertex : *m_selectedVertices) {
+    if ( !m_selectedVertices.empty() ) {
+        for ( auto* vertex : m_selectedVertices) {
             glPointSize(6.0f);
             glBegin( GL_POINTS );
             {
@@ -293,6 +292,9 @@ void GLView::keyPressEvent(QKeyEvent *event)
     case Qt::Key_F2:
         fractalize();
         break;
+    case Qt::Key_F3:
+        rotateSelected(20.0f);
+        break;
         //    case Qt::Key_C:
         //        qDebug() << "C";
         //        if ( event->modifiers() == Qt::CTRL ) {
@@ -360,19 +362,19 @@ void GLView::mouseReleaseEvent(QMouseEvent *event)
         break;
     case STATE_SELECT:
         m_rubberBand->hide();
-        m_selectedVertices->clear();
+        m_selectedVertices.clear();
 
         xLeft    =  2 * m_rubberBand->geometry().left()     / static_cast<float>(this->size().width()) - 1.0f;
         xRight   =  2 * m_rubberBand->geometry().right()    / static_cast<float>(this->size().width()) - 1.0f;
         yBottom  =  2 * -m_rubberBand->geometry().bottom()  / static_cast<float>(this->size().height()) + 1.0f;
         yTop     =  2 * -m_rubberBand->geometry().top()     / static_cast<float>(this->size().height()) + 1.0f;
 
-        for ( Vertex &vertex : *m_vertices ) {
+        for ( auto& vertex : *(m_vertices.get())) {
             if ( vertex.getX() > xLeft &&
                  vertex.getX() < xRight &&
                  vertex.getY() > yBottom &&
                  vertex.getY() < yTop) {
-                m_selectedVertices->push_back(&vertex);
+                m_selectedVertices.push_back(&vertex);
             }
         }
         break;

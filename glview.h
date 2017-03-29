@@ -41,6 +41,7 @@ public slots:
     void fractalize();
     void copyVertices();
     void pasteVertices();
+    void rotateSelected(float angle);
 
     void setColor(const QColor&);
     void setBackgroundColor(const QColor&);
@@ -81,8 +82,8 @@ protected:
 private:
     std::unique_ptr<Mesh> m_vMesh;
     std::unique_ptr<std::vector<Vertex>> m_vertices;
-    std::unique_ptr<std::vector<Vertex *>> m_selectedVertices;
-    std::unique_ptr<std::vector<Vertex>> m_copiedVertices;
+    std::vector<Vertex*> m_selectedVertices;
+    std::vector<Vertex> m_copiedVertices;
 
     int    m_primitiveType;
 

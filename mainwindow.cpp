@@ -139,13 +139,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     qDebug() << "Key main";
     switch(event->key()) {
-    case Qt::Key_F1:
-        qDebug() << "F1 Pressed";
-        ui->openGLWidget->clearVertices();
-        break;
-    case Qt::Key_F2:
-        ui->openGLWidget->fractalize();
-        break;
     default:
         break;
     }

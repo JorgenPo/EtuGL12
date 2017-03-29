@@ -1,6 +1,7 @@
 #ifndef GLVIEW_H
 #define GLVIEW_H
 
+#include "ifractal.h"
 #include "mesh.h"
 
 #include <memory>
@@ -36,6 +37,7 @@ signals:
 public slots:
     void setPrimitiveType(int type);
     void clearVertices();
+    void fractalize();
 
     void setColor(const QColor&);
     void setBackgroundColor(const QColor&);
@@ -99,6 +101,8 @@ private:
     int    m_scissorY         = 0;
     int    m_scissorWidth     = 100;
     int    m_scissorHeight    = 100;
+
+    IFractalizer* m_fractalizer;
 };
 
 #endif // GLVIEW_H

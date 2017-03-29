@@ -10,7 +10,7 @@ GLView::GLView(QWidget *parent) : QOpenGLWidget(parent),
 {
     m_vMesh = std::make_unique<Mesh>(nullptr, QOpenGLBuffer::DynamicDraw);
 
-    m_vertices = std::make_unique< std::vector<Vertex> >(20);
+    m_vertices = std::make_unique< std::vector<Vertex> >();
     m_vMesh->setData(*m_vertices.get());
 
     QSurfaceFormat format;
@@ -25,6 +25,8 @@ GLView::GLView(QWidget *parent) : QOpenGLWidget(parent),
     m_rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
     m_rubberBand->setPalette(QPalette(Qt::blue));
     m_rubberBand->setStyleSheet("background-color: #F5EEA7;");
+
+    m_fractalizer = new LFractalizer(0.08f, 15.0f);
 }
 
 GLView::~GLView()
@@ -35,6 +37,10 @@ GLView::~GLView()
 
     if ( m_vertices ) {
         m_vertices.release();
+    }
+
+    if ( m_fractalizer ) {
+        delete m_fractalizer;
     }
 }
 
@@ -186,6 +192,11 @@ void GLView::disableStates()
     setScissorTestEnabled(false);
 }
 
+void GLView::fractalize()
+{
+    m_fractalizer->fractalize(m_vertices.get());
+}
+
 void GLView::setScissorTestEnabled(bool enabled, int x, int y, int width, int height)
 {
     if ( enabled ) {
@@ -230,6 +241,9 @@ void GLView::keyPressEvent(QKeyEvent *event)
     switch(event->key()) {
     case Qt::Key_F1:
         clearVertices();
+        break;
+    case Qt::Key_F2:
+        fractalize();
         break;
     default:
         keyPressEvent(event);

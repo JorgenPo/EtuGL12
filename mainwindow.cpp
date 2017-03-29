@@ -128,6 +128,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         qDebug() << "HELLO WORLD";
         ui->openGLWidget->clearVertices();
         break;
+    case Qt::Key_F2:
+        ui->openGLWidget->fractalize();
+        break;
     default:
         break;
     }

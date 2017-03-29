@@ -135,14 +135,16 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
+    qDebug() << "Key main";
     switch(event->key()) {
     case Qt::Key_F1:
-        qDebug() << "HELLO WORLD";
+        qDebug() << "F1 Pressed";
         ui->openGLWidget->clearVertices();
         break;
     default:
         break;
     }
+    ui->openGLWidget->keyPressEvent(event);
 }
 
 
@@ -230,6 +232,9 @@ void MainWindow::setState(QAction *action)
         break;
     case GLView::STATE_ERASE:
         ui->openGLWidget->setState(GLView::STATE_ERASE);
+        break;
+    case GLView::STATE_SELECT:
+        ui->openGLWidget->setState(GLView::STATE_SELECT);
         break;
     default:
         qDebug() << "Error unknown state: " << state << "\n";

@@ -5,13 +5,18 @@
 #include <QDebug>
 
 GLView::GLView(QWidget *parent) : QOpenGLWidget(parent),
-    m_vMesh(), m_vertices(), m_primitiveType(1),
-    m_currentColor(), m_backgroundColor(), m_startPoint(0, 0)
+    m_vMesh(), m_vertices(), m_selectedVertices(),
+    m_copiedVertices(),
+    m_primitiveType(1), m_currentColor(), m_backgroundColor(),
+    m_startPoint(0, 0)
 {
     m_vMesh = std::make_unique<Mesh>(nullptr, QOpenGLBuffer::DynamicDraw);
 
-    m_vertices = std::make_unique< std::vector<Vertex> >(20);
+    m_vertices          = std::make_unique< std::vector<Vertex> >(20);
+    m_selectedVertices  = std::make_unique< std::vector<Vertex *> >(10);
+    m_copiedVertices    = std::make_unique< std::vector<Vertex> >(10);
     m_vMesh->setData(*m_vertices.get());
+    m_selectedVertices->clear();
 
     QSurfaceFormat format;
     format.setVersion(1, 5);
@@ -36,6 +41,14 @@ GLView::~GLView()
     if ( m_vertices ) {
         m_vertices.release();
     }
+
+    if ( m_selectedVertices ) {
+        m_selectedVertices.release();
+    }
+
+    if ( m_copiedVertices ) {
+        m_copiedVertices.release();
+    }
 }
 
 void GLView::setPrimitiveType(int type)
@@ -46,6 +59,7 @@ void GLView::setPrimitiveType(int type)
 void GLView::clearVertices()
 {
     m_vertices->clear();
+    m_selectedVertices->clear();
 }
 
 void GLView::setColor(const QColor &color)
@@ -149,6 +163,18 @@ void GLView::paintGL()
     }
     glEnd();
 
+    if ( !m_selectedVertices->empty() ) {
+        for ( Vertex *vertex : *m_selectedVertices) {
+            glPointSize(6.0f);
+            glBegin( GL_POINTS );
+            {
+                glColor3f(0.0f, 0.0f, 1.0f);
+                glVertex2f(vertex->getX(), vertex->getY());
+            }
+            glEnd();
+        }
+    }
+
     if ( m_alphaTestEnabled ) {
         glDisable(GL_ALPHA_TEST);
     }
@@ -209,6 +235,9 @@ void GLView::mousePressEvent(QMouseEvent *event)
     case STATE_ERASE:
         break;
     case STATE_SELECT:
+        m_startPoint = event->pos();
+        m_rubberBand->setGeometry(QRect(m_startPoint, QSize()));
+        m_rubberBand->show();
         break;
     default:
         qDebug() << "Error mousePressEvent, m_state:" << m_state;
@@ -217,12 +246,12 @@ void GLView::mousePressEvent(QMouseEvent *event)
 
 void GLView::keyPressEvent(QKeyEvent *event)
 {
+    qDebug() << "Key view";
     switch(event->key()) {
     case Qt::Key_F1:
         clearVertices();
         break;
     default:
-        keyPressEvent(event);
         break;
     }
 }
@@ -241,6 +270,7 @@ void GLView::mouseMoveEvent(QMouseEvent *event)
     case STATE_ERASE:
         break;
     case STATE_SELECT:
+        m_rubberBand->setGeometry(QRect(m_startPoint, event->pos()).normalized());
         break;
     default:
         break;
@@ -249,6 +279,7 @@ void GLView::mouseMoveEvent(QMouseEvent *event)
 
 void GLView::mouseReleaseEvent(QMouseEvent *event)
 {
+    float xLeft, xRight, yBottom, yTop;
     switch ( m_state ) {
     case STATE_DRAW:
         break;
@@ -265,6 +296,22 @@ void GLView::mouseReleaseEvent(QMouseEvent *event)
     case STATE_ERASE:
         break;
     case STATE_SELECT:
+        m_rubberBand->hide();
+        m_selectedVertices->clear();
+
+        xLeft    =  2 * m_rubberBand->geometry().left()     / static_cast<float>(this->size().width()) - 1.0f;
+        xRight   =  2 * m_rubberBand->geometry().right()    / static_cast<float>(this->size().width()) - 1.0f;
+        yBottom  =  2 * -m_rubberBand->geometry().bottom()  / static_cast<float>(this->size().height()) + 1.0f;
+        yTop     =  2 * -m_rubberBand->geometry().top()     / static_cast<float>(this->size().height()) + 1.0f;
+
+        for ( Vertex &vertex : *m_vertices ) {
+            if ( vertex.getX() > xLeft &&
+                 vertex.getX() < xRight &&
+                 vertex.getY() > yBottom &&
+                 vertex.getY() < yTop) {
+                m_selectedVertices->push_back(&vertex);
+            }
+        }
         break;
     default:
         break;

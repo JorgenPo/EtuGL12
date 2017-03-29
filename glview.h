@@ -63,7 +63,7 @@ protected:
     void mousePressEvent(QMouseEvent *event);
 
     // QWidget interface
-protected:
+public:
     void keyPressEvent(QKeyEvent *event);
 
     // QWidget interface
@@ -77,6 +77,8 @@ protected:
 private:
     std::unique_ptr<Mesh> m_vMesh;
     std::unique_ptr<std::vector<Vertex>> m_vertices;
+    std::unique_ptr<std::vector<Vertex *>> m_selectedVertices;
+    std::unique_ptr<std::vector<Vertex>> m_copiedVertices;
 
     int    m_primitiveType;
 

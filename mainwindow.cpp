@@ -10,7 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     m_drawAction(),
     m_scissorsAction(),
-    m_eraseAction()
+    m_eraseAction(),
+    m_selectAction()
 {
     ui->setupUi(this);
 
@@ -67,37 +68,48 @@ MainWindow::MainWindow(QWidget *parent) :
     m_drawAction     = new QAction (QIcon(":/images/icon_draw.svg"),     tr(""), this);
     m_scissorsAction = new QAction (QIcon(":/images/icon_scissors.svg"), tr(""), this);
     m_eraseAction    = new QAction (QIcon(":/images/icon_erase.svg"),    tr(""), this);
+    m_selectAction   = new QAction (QIcon(":/images/004-select.png"),    tr(""), this);
 
     m_drawAction->setData(static_cast<int>(GLView::STATE_DRAW));
     m_scissorsAction->setData(static_cast<int>(GLView::STATE_SCISSORS));
     m_eraseAction->setData(static_cast<int>(GLView::STATE_ERASE));
+    m_selectAction->setData(static_cast<int>(GLView::STATE_SELECT));
 
     m_toolBarActionGroup = new QActionGroup(this);
     m_toolBarActionGroup->addAction(m_drawAction);
     m_toolBarActionGroup->addAction(m_scissorsAction);
     m_toolBarActionGroup->addAction(m_eraseAction);
+    m_toolBarActionGroup->addAction(m_selectAction);
     m_toolBarActionGroup->setExclusive(true);
 
     ui->mainToolBar->insertAction(nullptr, m_drawAction);
     ui->mainToolBar->insertAction(nullptr, m_scissorsAction);
     ui->mainToolBar->insertAction(nullptr, m_eraseAction);
+    ui->mainToolBar->insertAction(nullptr, m_selectAction);
 
     m_drawAction->setToolTip(tr("Режим рисования"));
     m_scissorsAction->setToolTip(tr("Режим отсечения"));
     m_eraseAction->setToolTip(tr("Режим стирания"));
+    m_selectAction->setToolTip(tr("Режим выделения"));
 
     m_drawAction->setShortcut(QKeySequence("Ctrl+D"));
     m_scissorsAction->setShortcut(QKeySequence("Ctrl+S"));
     m_eraseAction->setShortcut(QKeySequence("Ctrl+E"));
+    m_selectAction->setShortcut(QKeySequence("Ctrl+A"));
 
     m_drawAction->setCheckable(true);
     m_scissorsAction->setCheckable(true);
     m_eraseAction->setCheckable(true);
+    m_selectAction->setCheckable(true);
 
     /* Default */
     m_drawAction->setChecked(true);
 
     ui->comboAlpha->setCurrentIndex(7);
+
+    ui->comboSFactor->setCurrentIndex(1);
+    ui->comboDFactor->setCurrentIndex(0);
+
 
     connect(m_toolBarActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(setState(QAction*)));
 
@@ -107,6 +119,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->openGLWidget, SIGNAL(scissorsRectChanged(const QRubberBand&)), this, SLOT(onScissorsRectChanged(const QRubberBand&)));
 
     connect(ui->clearAction, SIGNAL(triggered(bool)), ui->openGLWidget, SLOT(clearVertices()));
+    connect(ui->actionCopy, SIGNAL(triggered(bool)), ui->openGLWidget, SLOT(copyVertices()));
+    connect(ui->actionPaste, SIGNAL(triggered(bool)), ui->openGLWidget, SLOT(pasteVertices()));
 }
 
 MainWindow::~MainWindow()
@@ -123,9 +137,10 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
+    qDebug() << "Key main";
     switch(event->key()) {
     case Qt::Key_F1:
-        qDebug() << "HELLO WORLD";
+        qDebug() << "F1 Pressed";
         ui->openGLWidget->clearVertices();
         break;
     case Qt::Key_F2:
@@ -134,6 +149,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     default:
         break;
     }
+    ui->openGLWidget->keyPressEvent(event);
 }
 
 
@@ -221,6 +237,9 @@ void MainWindow::setState(QAction *action)
         break;
     case GLView::STATE_ERASE:
         ui->openGLWidget->setState(GLView::STATE_ERASE);
+        break;
+    case GLView::STATE_SELECT:
+        ui->openGLWidget->setState(GLView::STATE_SELECT);
         break;
     default:
         qDebug() << "Error unknown state: " << state << "\n";

@@ -37,6 +37,9 @@ signals:
 public slots:
     void setPrimitiveType(int type);
     void clearVertices();
+    void copyVertices();
+    void pasteVertices();
+
 
     void setColor(const QColor&);
     void setBackgroundColor(const QColor&);

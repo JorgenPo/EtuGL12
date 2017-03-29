@@ -16,7 +16,10 @@ GLView::GLView(QWidget *parent) : QOpenGLWidget(parent),
     m_selectedVertices  = std::make_unique< std::vector<Vertex *> >(10);
     m_copiedVertices    = std::make_unique< std::vector<Vertex> >(10);
     m_vMesh->setData(*m_vertices.get());
+
+    m_vertices->clear();
     m_selectedVertices->clear();
+    m_copiedVertices->clear();
 
     QSurfaceFormat format;
     format.setVersion(1, 5);
@@ -60,6 +63,30 @@ void GLView::clearVertices()
 {
     m_vertices->clear();
     m_selectedVertices->clear();
+}
+
+void GLView::copyVertices()
+{
+    qDebug() << "Ctrl+C";
+    if ( !m_selectedVertices->empty() ) {
+        m_copiedVertices->clear();
+    }
+    for ( Vertex *vertex : *m_selectedVertices ) {
+        m_copiedVertices->push_back({vertex->getX(), vertex->getY(), 0.0f, QColor(Qt::blue)});
+    }
+    for ( Vertex vertex : *m_copiedVertices ) {
+        qDebug() << "COPY x = " << vertex.getX() << " y = " << vertex.getY();
+    }
+}
+
+void GLView::pasteVertices()
+{
+    qDebug() << "Ctrl+V";
+    for ( Vertex &vertex : *m_copiedVertices ) {
+        vertex.setColor(QColor(Qt::green));
+        m_vertices->push_back(vertex);
+        qDebug() << "PASTE x = " << vertex.getX() << " y = " << vertex.getY();
+    }
 }
 
 void GLView::setColor(const QColor &color)
@@ -251,6 +278,27 @@ void GLView::keyPressEvent(QKeyEvent *event)
     case Qt::Key_F1:
         clearVertices();
         break;
+        //    case Qt::Key_C:
+        //        qDebug() << "C";
+        //        if ( event->modifiers() == Qt::CTRL ) {
+        //            qDebug() << "Ctrl+C";
+        //            for ( Vertex *vertex : *m_selectedVertices ) {
+        //                m_copiedVertices->push_back({vertex->getX(), vertex->getY(), 0.0f, QColor(Qt::blue)});
+        //                qDebug() << "Ctrl+C";
+        //            }
+        //        }
+        //        break;
+        //    case Qt::Key_V:
+        //        if ( event->modifiers() == Qt::CTRL ) {
+        //            for ( Vertex &vertex : *m_copiedVertices ) {
+        //                m_vertices->push_back(nullptr, vertex);
+        //                qDebug() << "Ctrl+V";
+        //            }
+        //        }
+        //        break;
+        //        for ( Vertex vertex : *m_copiedVertices ) {
+        //            qDebug() << "COPY x = " << vertex.getX() << " y = " << vertex.getY();
+        //        }
     default:
         break;
     }

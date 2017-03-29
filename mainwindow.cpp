@@ -119,6 +119,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->openGLWidget, SIGNAL(scissorsRectChanged(const QRubberBand&)), this, SLOT(onScissorsRectChanged(const QRubberBand&)));
 
     connect(ui->clearAction, SIGNAL(triggered(bool)), ui->openGLWidget, SLOT(clearVertices()));
+    connect(ui->actionCopy, SIGNAL(triggered(bool)), ui->openGLWidget, SLOT(copyVertices()));
+    connect(ui->actionPaste, SIGNAL(triggered(bool)), ui->openGLWidget, SLOT(pasteVertices()));
 }
 
 MainWindow::~MainWindow()

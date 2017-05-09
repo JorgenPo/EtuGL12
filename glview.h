@@ -17,10 +17,18 @@ class GLView : public QOpenGLWidget
 public:
 
     enum State {
-        STATE_DRAW,
+        STATE_NONE,
+        STATE_DRAW = 0,
         STATE_SCISSORS,
         STATE_ERASE,
-        STATE_SELECT
+        STATE_SELECT,
+        STATE_SPLINE
+    };
+
+    enum Labs {
+        LAB_1_2,
+        LAB_3,
+        LAB_4
     };
 
     explicit GLView(QWidget *parent = nullptr);
@@ -34,6 +42,7 @@ private:
 
 signals:
     void scissorsRectChanged(const QRubberBand& rubberBand);
+    void stateSplineSelected();
 
 public slots:
     void setPrimitiveType(int type);
@@ -42,6 +51,9 @@ public slots:
     void copyVertices();
     void pasteVertices();
     void rotateSelected(float angle);
+
+    void setLab(GLView::Labs lab);
+    void showSpline(GLView::State state);
 
     void setColor(const QColor&);
     void setBackgroundColor(const QColor&);
@@ -56,6 +68,10 @@ public slots:
 
     void setBlendingSfactor(int s);
     void setBlendingDfactor(int d);
+
+    //Spline mode
+    void splineActivated(bool activated);
+
 
     // QOpenGLWidget interface
 protected:
@@ -91,6 +107,7 @@ private:
     QColor m_backgroundColor;
 
     State  m_state = State::STATE_DRAW;
+    Labs   m_lab   = Labs::LAB_1_2;
 
     bool   m_alphaTestEnabled = false;
     bool   m_blendingEnabled  = false;

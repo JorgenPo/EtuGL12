@@ -3,7 +3,7 @@
 
 #include <QVector3D>
 #include <QColor>
-
+#include <QObject>
 #include <cstdint>
 #include <array>
 
@@ -48,7 +48,7 @@ public:
     /* Color */
     void setColor(const QColor &color) { m_color = color; }
 
-private:
+protected:
     float m_x, m_y, m_z;
     QColor m_color;
 };

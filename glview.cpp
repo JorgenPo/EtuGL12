@@ -10,7 +10,9 @@ GLView::GLView(QWidget *parent) : QOpenGLWidget(parent),
     m_vMesh(), m_vertices(), m_selectedVertices(),
     m_copiedVertices(),
     m_primitiveType(1), m_currentColor(), m_backgroundColor(),
-    m_startPoint(0, 0)
+    m_startPoint(0, 0),
+    m_lab(Labs::LAB_1_2),
+    m_state(State::STATE_DRAW)
 {
     m_vMesh = std::make_unique<Mesh>(nullptr, QOpenGLBuffer::DynamicDraw);
 
@@ -79,9 +81,13 @@ void GLView::copyVertices()
 void GLView::pasteVertices()
 {
     qDebug() << "Ctrl+V";
+    m_selectedVertices.clear();
+    Vertex* pVertex = nullptr;
     for ( auto& vertex : m_copiedVertices ) {
         vertex.setColor(QColor(Qt::green));
         m_vertices->push_back(vertex);
+        pVertex = &(m_vertices->back());
+        m_selectedVertices.push_back(pVertex);
         qDebug() << "PASTE x = " << vertex.getX() << " y = " << vertex.getY();
     }
 }
@@ -92,6 +98,20 @@ void GLView::rotateSelected(float angle)
     rotation.rotate(qDegreesToRadians(angle), 0, 0, 1);
     for ( auto* vertex : m_selectedVertices ) {
         vertex->setPosition((rotation * QVector4D(vertex->getPosition(), 0.0f)).toVector3D());
+    }
+}
+
+void GLView::setLab(GLView::Labs lab)
+{
+    m_lab = lab;
+
+}
+
+void GLView::showSpline(GLView::State state)
+{
+    qDebug() << "Show spline " << state;
+    if ( state == State::STATE_SPLINE ) {
+        qDebug() << "Spline " << state;
     }
 }
 
@@ -149,6 +169,11 @@ void GLView::setBlendingDfactor(int d)
     setBlendingEnabled(true);
 }
 
+void GLView::splineActivated(bool activated)
+{
+
+}
+
 void GLView::initializeGL()
 {
 
@@ -190,15 +215,35 @@ void GLView::paintGL()
         glBlendFunc(m_blendingSfactor, m_blendingDfactor);
     }
 
-    glBegin(m_primitiveType);
-    {
-        m_vMesh->render();
+    switch ( m_lab ) {
+    case LAB_1_2:
+    case LAB_3:
+        glPointSize(2.0f);
+        glLineWidth(1.0f);
+        glBegin(m_primitiveType);
+        {
+            m_vMesh->render();
+        }
+        glEnd();
+        break;
+    case LAB_4:
+        qDebug() << "PAINT Spline.";
+        glPointSize(5.0f);
+        glLineWidth(2.0f);
+        glBegin( GL_LINE_STRIP );
+        {
+            m_vMesh->render();
+        }
+        glEnd();
+        break;
+    default:
+        qDebug() << "Warning! Need add new LAB to GLView::Labs";
+        break;
     }
-    glEnd();
 
     if ( !m_selectedVertices.empty() ) {
         for ( auto* vertex : m_selectedVertices) {
-            glPointSize(6.0f);
+            glPointSize(3.0f);
             glBegin( GL_POINTS );
             {
                 glColor3f(0.0f, 0.0f, 1.0f);
@@ -277,6 +322,16 @@ void GLView::mousePressEvent(QMouseEvent *event)
         m_rubberBand->setGeometry(QRect(m_startPoint, QSize()));
         m_rubberBand->show();
         break;
+    case STATE_SPLINE:
+        qDebug() << "STATE_SPLINE - Mouse Press";
+        if (m_selectedVertices.empty()) {
+            break;
+        }
+        qDebug() << "Selected items";
+        foreach (Vertex* selectedVertex, m_selectedVertices) {
+            qDebug() << selectedVertex->getX();
+        }
+        break;
     default:
         qDebug() << "Error mousePressEvent, m_state:" << m_state;
     }
@@ -336,6 +391,8 @@ void GLView::mouseMoveEvent(QMouseEvent *event)
         break;
     case STATE_SELECT:
         m_rubberBand->setGeometry(QRect(m_startPoint, event->pos()).normalized());
+        break;
+    case STATE_SPLINE:
         break;
     default:
         break;

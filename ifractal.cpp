@@ -65,7 +65,8 @@ void LFractalizer::fractalize(std::vector<Vertex> *vertices)
         vertices->insert(iterator, newVertices.begin(), newVertices.end());
         i += 5;
 
-        qDebug() << "Iterations: " << ++iterations;
+//        qDebug() << "Iterations: " << ++iterations;
+        ++iterations;
     }
 
     qDebug() << "TOTAL: " << iterations;

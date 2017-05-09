@@ -4,6 +4,7 @@
 #include <QActionGroup>
 #include <QMainWindow>
 #include <QRubberBand>
+#include <glview.h>
 
 namespace Ui {
 class MainWindow;
@@ -17,6 +18,10 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+signals:
+    void stateChanged(GLView::State);
+    void labChanged(GLView::Labs);
+
 private slots:
     void on_comboBox_currentIndexChanged(int index);
     void on_colorButton_clicked();
@@ -29,7 +34,13 @@ private slots:
     void setState(QAction* action);    
 
     void onScissorsRectChanged(const QRubberBand &rubberBand);
+    void on_comboBox_splineTypes_activated(const QString &arg1);
 
+    void on_pushButton_actionSpline_clicked();
+
+    void on_tabWidget_currentChanged(int index);
+
+    void isSplineActivated(bool activated);
 private:
     Ui::MainWindow *ui;
 

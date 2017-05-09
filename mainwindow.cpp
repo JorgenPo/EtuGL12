@@ -121,6 +121,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->clearAction, SIGNAL(triggered(bool)), ui->openGLWidget, SLOT(clearVertices()));
     connect(ui->actionCopy, SIGNAL(triggered(bool)), ui->openGLWidget, SLOT(copyVertices()));
     connect(ui->actionPaste, SIGNAL(triggered(bool)), ui->openGLWidget, SLOT(pasteVertices()));
+
+    connect(this, SIGNAL(stateChanged(GLView::State)), ui->openGLWidget, SLOT(showSpline(GLView::State)));
+    connect(this, SIGNAL(labChanged(GLView::Labs)), ui->openGLWidget, SLOT(setLab(GLView::Labs)));
 }
 
 MainWindow::~MainWindow()
@@ -246,4 +249,43 @@ void MainWindow::onScissorsRectChanged(const QRubberBand& rubberBand)
     ui->scissorY->setValue(rubberBand.y());
     ui->scissorWidth->setValue(rubberBand.width());
     ui->scissorHeight->setValue(rubberBand.height());
+}
+
+void MainWindow::on_comboBox_splineTypes_activated(const QString &arg1)
+{
+
+}
+
+void MainWindow::on_pushButton_actionSpline_clicked()
+{
+    ui->openGLWidget->setState(GLView::STATE_SPLINE);
+    emit stateChanged(GLView::STATE_SPLINE);
+}
+
+void MainWindow::on_tabWidget_currentChanged(int index)
+{
+    qDebug() << "Changed index = " << index ;
+    switch (index) {
+    case 0:
+    case 1:
+        ui->mainToolBar->show();
+        ui->openGLWidget->setState(GLView::STATE_DRAW);
+        emit labChanged(GLView::Labs::LAB_1_2);
+        break;
+    case 2:
+//        m_toolBarActionGroup->checkedAction()->setChecked(false);
+        ui->mainToolBar->hide();
+//        ui->openGLWidget->setState(GLView::STATE_ERASE);
+        ui->openGLWidget->setState(GLView::STATE_NONE);
+        ui->pushButton_actionSpline->setPalette(QColor(Qt::red));
+        emit labChanged(GLView::Labs::LAB_4);
+        break;
+    default:
+        break;
+    }
+}
+
+void MainWindow::isSplineActivated(bool activated)
+{
+
 }

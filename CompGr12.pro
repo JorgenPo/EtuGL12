@@ -31,13 +31,15 @@ SOURCES += main.cpp\
     glview.cpp \
     mesh.cpp \
     vertex.cpp \
-    ifractal.cpp
+    ifractal.cpp \
+    splinevertex.cpp
 
 HEADERS  += mainwindow.h \
     glview.h \
     mesh.h \
     vertex.h \
-    ifractal.h
+    ifractal.h \
+    splinevertex.h
 
 FORMS    += \
     mainwindow.ui

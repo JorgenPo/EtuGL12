@@ -10,7 +10,7 @@ SplineVertex::SplineVertex()
     m_color = QColor(Qt::green);
 }
 
-SplineVertex::SplineVertex(Vertex &vertex)
+SplineVertex::SplineVertex(const Vertex &vertex)
 {
     m_vectorLeft    = new QVector3D(0, 0, 0);
     m_vectorRight   = new QVector3D(0, 0, 0);

@@ -7,7 +7,7 @@ class SplineVertex : public Vertex
 {
 public:
     SplineVertex();
-    SplineVertex(Vertex& vertex);
+    SplineVertex(const Vertex& vertex);
 
     QVector3D* getVectorLeft() const { return m_vectorLeft; }
     QVector3D* getVectorRight() const { return m_vectorRight; }

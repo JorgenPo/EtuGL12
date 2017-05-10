@@ -3,6 +3,7 @@
 
 #include "ifractal.h"
 #include "mesh.h"
+#include "splinevertex.h"
 
 #include <memory>
 
@@ -17,7 +18,7 @@ class GLView : public QOpenGLWidget
 public:
 
     enum State {
-        STATE_NONE,
+        STATE_NONE = -1,
         STATE_DRAW = 0,
         STATE_SCISSORS,
         STATE_ERASE,
@@ -72,6 +73,8 @@ public slots:
     //Spline mode
     void splineActivated(bool activated);
 
+private slots:
+    void labChanged();
 
     // QOpenGLWidget interface
 protected:
@@ -100,6 +103,9 @@ private:
     std::unique_ptr<std::vector<Vertex>> m_vertices;
     std::vector<Vertex*> m_selectedVertices;
     std::vector<Vertex> m_copiedVertices;
+
+    std::vector<SplineVertex*>      m_splineVertices;
+    const size_t m_vertexRadius = 10.0f;
 
     int    m_primitiveType;
 

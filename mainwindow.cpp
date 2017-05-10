@@ -110,8 +110,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->comboSFactor->setCurrentIndex(1);
     ui->comboDFactor->setCurrentIndex(0);
 
+    ui->pushButton_actionSpline->setCheckable(true);
 
-    connect(m_toolBarActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(setState(QAction*)));
+    connect(m_toolBarActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(setStateFromAction(QAction*)));
+//    connect(m_toolBarActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(setStateFromAction(QAction*)));
 
     ui->openGLWidget->setScissorTestEnabled(true, 0, 0,
                                             this->size().width(), this->size().height());
@@ -221,7 +223,7 @@ void MainWindow::on_comboDFactor_currentIndexChanged(int index)
     ui->openGLWidget->setBlendingDfactor(value);
 }
 
-void MainWindow::setState(QAction *action)
+void MainWindow::setStateFromAction(QAction *action)
 {
     GLView::State state = static_cast<GLView::State>(action->data().toInt());
     switch (state) {
@@ -258,8 +260,16 @@ void MainWindow::on_comboBox_splineTypes_activated(const QString &arg1)
 
 void MainWindow::on_pushButton_actionSpline_clicked()
 {
-    ui->openGLWidget->setState(GLView::STATE_SPLINE);
-    emit stateChanged(GLView::STATE_SPLINE);
+    qDebug() << "Checked = " << ui->pushButton_actionSpline->isChecked();
+    if ( ui->pushButton_actionSpline->isChecked() ) {
+        ui->pushButton_actionSpline->setStyleSheet("background-color: rgb(0, 255, 0);");
+        ui->openGLWidget->setState(GLView::STATE_SPLINE);
+        emit stateChanged(GLView::STATE_SPLINE);
+        return;
+    }
+    ui->pushButton_actionSpline->setStyleSheet("background-color: rgb(255, 0, 0);");
+    ui->openGLWidget->setState(GLView::STATE_NONE);
+    emit stateChanged(GLView::STATE_NONE);
 }
 
 void MainWindow::on_tabWidget_currentChanged(int index)
@@ -268,16 +278,18 @@ void MainWindow::on_tabWidget_currentChanged(int index)
     switch (index) {
     case 0:
     case 1:
+        qDebug() << "cur tab = Lab_1_2";
         ui->mainToolBar->show();
         ui->openGLWidget->setState(GLView::STATE_DRAW);
         emit labChanged(GLView::Labs::LAB_1_2);
         break;
     case 2:
 //        m_toolBarActionGroup->checkedAction()->setChecked(false);
+        qDebug() << "cur tab = Lab_4";
         ui->mainToolBar->hide();
 //        ui->openGLWidget->setState(GLView::STATE_ERASE);
         ui->openGLWidget->setState(GLView::STATE_NONE);
-        ui->pushButton_actionSpline->setPalette(QColor(Qt::red));
+        ui->pushButton_actionSpline->setStyleSheet("background-color: rgb(255, 0, 0);");
         emit labChanged(GLView::Labs::LAB_4);
         break;
     default:

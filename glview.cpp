@@ -7,8 +7,9 @@
 #include <QtMath>
 
 GLView::GLView(QWidget *parent) : QOpenGLWidget(parent),
-    m_vMesh(), m_vertices(), m_selectedVertices(),
-    m_copiedVertices(),
+    m_vMesh(),
+    m_vertices(), m_selectedVertices(), m_copiedVertices(),
+    m_splineVertices(),
     m_primitiveType(1), m_currentColor(), m_backgroundColor(),
     m_startPoint(0, 0),
     m_lab(Labs::LAB_1_2),
@@ -19,6 +20,7 @@ GLView::GLView(QWidget *parent) : QOpenGLWidget(parent),
     m_vertices = std::make_unique< std::vector<Vertex> >();
     m_selectedVertices  = std::vector<Vertex*>();
     m_copiedVertices    = std::vector<Vertex>();
+    m_splineVertices    = std::vector<SplineVertex*>();
 
     m_vMesh->setData(*m_vertices.get());
 
@@ -103,8 +105,11 @@ void GLView::rotateSelected(float angle)
 
 void GLView::setLab(GLView::Labs lab)
 {
+    if (lab == m_lab) {
+        return;
+    }
     m_lab = lab;
-
+    labChanged();
 }
 
 void GLView::showSpline(GLView::State state)
@@ -174,6 +179,28 @@ void GLView::splineActivated(bool activated)
 
 }
 
+void GLView::labChanged()
+{
+    switch ( m_lab ) {
+    case Labs::LAB_1_2:
+    case Labs::LAB_3:
+        break;
+    case Labs::LAB_4:
+        //TODO Сделать однозначное соответствие между Vertex и SplineVertex,
+        //чтобы без new SplineVertex(vertex); можно было обойтись.
+        //и при смене лабы оставались вектора.
+        m_splineVertices.clear();
+        for (auto& vertex : *(m_vertices.get())) {
+            SplineVertex* splineVertex = new SplineVertex(vertex);
+            m_splineVertices.push_back(splineVertex);
+            //            qDebug() << splineVertex << vertex.getX() << vertex.getY();
+        }
+        break;
+    default:
+        break;
+    }
+}
+
 void GLView::initializeGL()
 {
 
@@ -221,20 +248,44 @@ void GLView::paintGL()
         glPointSize(2.0f);
         glLineWidth(1.0f);
         glBegin(m_primitiveType);
-        {
-            m_vMesh->render();
-        }
+    {
+        m_vMesh->render();
+    }
         glEnd();
         break;
     case LAB_4:
-        qDebug() << "PAINT Spline.";
-        glPointSize(5.0f);
-        glLineWidth(2.0f);
-        glBegin( GL_LINE_STRIP );
-        {
-            m_vMesh->render();
+        QVector3D* vector;
+        if ( !m_splineVertices.empty() ) {
+            for ( const SplineVertex* vertex : m_splineVertices ) {
+//                glBegin( GL_POINTS );
+//                {
+//                    glColor4f(vertex->getR(), vertex->getG(),
+//                              vertex->getB(), vertex->getA());
+
+//                    glVertex3f(vertex->getX(), vertex->getY(), vertex->getZ());
+//                }
+//                glEnd();
+
+                glLineWidth(2.0f);
+                glBegin( GL_LINES );
+                {
+                    vector = vertex->getVectorLeft();
+                    glColor4f(0, 255, 0, 255);
+                    glVertex3f(vertex->getX(), vertex->getY(), vertex->getZ());
+                    glVertex3f(vertex->getX() + vector->x(),
+                               vertex->getY() + vector->y(),
+                               vertex->getZ() + vector->z());
+
+                    vector = vertex->getVectorRight();
+                    glColor4f(0, 255, 0, 255);
+                    glVertex3f(vertex->getX(), vertex->getY(), vertex->getZ());
+                    glVertex3f(vertex->getX() + vector->x(),
+                               vertex->getY() + vector->y(),
+                               vertex->getZ() + vector->z());
+                }
+                glEnd();
+            }
         }
-        glEnd();
         break;
     default:
         qDebug() << "Warning! Need add new LAB to GLView::Labs";
@@ -267,6 +318,7 @@ void GLView::paintGL()
 void GLView::setState(const State &state)
 {
     m_state = state;
+    qDebug() << "cur state = " << State(m_state);
     if ( state == STATE_ERASE ) {
         disableStates();
     }
@@ -305,9 +357,10 @@ void GLView::mousePressEvent(QMouseEvent *event)
 
     x =  2 * x / static_cast<float>(this->size().width()) - 1.0f;
     y =  2 * -y / static_cast<float>(this->size().height()) + 1.0f;
-
+    qDebug() << "State" << m_state;
     switch ( m_state ) {
     case STATE_DRAW:
+        qDebug() << "i'm here";
         m_vertices->push_back({x, y, 0.0f, m_currentColor});
         break;
     case STATE_SCISSORS:
@@ -378,6 +431,7 @@ void GLView::keyPressEvent(QKeyEvent *event)
 
 void GLView::mouseMoveEvent(QMouseEvent *event)
 {
+    qDebug() << "State" << m_state;
     switch ( m_state ) {
     case STATE_DRAW:
         if ( event->buttons() == Qt::LeftButton) {
@@ -402,6 +456,7 @@ void GLView::mouseMoveEvent(QMouseEvent *event)
 void GLView::mouseReleaseEvent(QMouseEvent *event)
 {
     float xLeft, xRight, yBottom, yTop;
+    qDebug() << "State" << m_state;
     switch ( m_state ) {
     case STATE_DRAW:
         break;

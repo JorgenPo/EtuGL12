@@ -31,7 +31,7 @@ private slots:
     void on_spinAlpha_valueChanged(double arg1);
     void on_comboSFactor_currentIndexChanged(int index);
     void on_comboDFactor_currentIndexChanged(int index);
-    void setState(QAction* action);    
+    void setStateFromAction(QAction* action);
 
     void onScissorsRectChanged(const QRubberBand &rubberBand);
     void on_comboBox_splineTypes_activated(const QString &arg1);

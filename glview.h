@@ -90,6 +90,19 @@ public:
 protected:
     void mousePressEvent(QMouseEvent *event);
 
+public:
+    bool isSelectedSplineVertex(const QVector3D &vertexPos,
+                                const float &xCoord,
+                                const float &yCoord,
+                                const float &radiusX,
+                                const float &radiusY);
+    bool isSelectedSplineVector(const QVector3D &vectorPos,
+                                const QVector3D &vertexPos,
+                                const float &xCoord,
+                                const float &yCoord,
+                                const float &radiusX,
+                                const float &radiusY);
+
     // QWidget interface
 protected:
     void mouseMoveEvent(QMouseEvent *event);
@@ -106,6 +119,7 @@ private:
 
     std::vector<SplineVertex*>      m_splineVertices;
     const size_t m_vertexRadius = 10.0f;
+    QVector3D* m_splineCurVector;
 
     int    m_primitiveType;
 

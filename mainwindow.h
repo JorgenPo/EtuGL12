@@ -40,7 +40,6 @@ private slots:
 
     void on_tabWidget_currentChanged(int index);
 
-    void isSplineActivated(bool activated);
 private:
     Ui::MainWindow *ui;
 

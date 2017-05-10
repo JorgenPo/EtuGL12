@@ -295,8 +295,3 @@ void MainWindow::on_tabWidget_currentChanged(int index)
         break;
     }
 }
-
-void MainWindow::isSplineActivated(bool activated)
-{
-
-}

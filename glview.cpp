@@ -255,33 +255,60 @@ void GLView::paintGL()
         break;
     case LAB_4:
         QVector3D* vector;
+        float x, y, z;
         if ( !m_splineVertices.empty() ) {
-            for ( const SplineVertex* vertex : m_splineVertices ) {
-//                glBegin( GL_POINTS );
-//                {
-//                    glColor4f(vertex->getR(), vertex->getG(),
-//                              vertex->getB(), vertex->getA());
-
-//                    glVertex3f(vertex->getX(), vertex->getY(), vertex->getZ());
-//                }
-//                glEnd();
-
+            for ( const SplineVertex* vertex : m_splineVertices ) { //TODO Change to auto
+                glPointSize( m_vertexRadius );
                 glLineWidth(2.0f);
+                //TODO Add functions for painting Vertex/Vector
+                //Paint Vertex
+                glBegin( GL_POINTS );
+                {
+                    glColor4f(vertex->getR(), vertex->getG(),
+                              vertex->getB(), vertex->getA());
+                    glVertex3f(vertex->getX(), vertex->getY(), vertex->getZ());
+                }
+                glEnd();
+
+                //Paint Left vector
+                vector = vertex->getVectorLeft();
+                x = vertex->getX() + vector->x() + -0.1f;
+                y = vertex->getY() + vector->y() + -0.1f;
+                z = vertex->getZ() + vector->z();
+
+                glBegin( GL_POINTS );
+                {
+                    glColor4f(0, 255, 0, 255);
+                    glVertex3f(x, y, z);
+                }
+                glEnd();
                 glBegin( GL_LINES );
                 {
-                    vector = vertex->getVectorLeft();
                     glColor4f(0, 255, 0, 255);
                     glVertex3f(vertex->getX(), vertex->getY(), vertex->getZ());
-                    glVertex3f(vertex->getX() + vector->x(),
-                               vertex->getY() + vector->y(),
-                               vertex->getZ() + vector->z());
+                    glColor4f(0, 255, 0, 255);
+                    glVertex3f(x, y, z);
+                }
+                glEnd();
 
-                    vector = vertex->getVectorRight();
-                    glColor4f(0, 255, 0, 255);
+                //Paint Right vector
+                vector = vertex->getVectorRight();
+                x = vertex->getX() + vector->x() + 0.1f;
+                y = vertex->getY() + vector->y() + 0.1f;
+                z = vertex->getZ() + vector->z();
+
+                glBegin( GL_POINTS );
+                {
+                    glColor4f(255, 0, 0, 255);
+                    glVertex3f(x, y, z);
+                }
+                glEnd();
+                glBegin( GL_LINES );
+                {
+                    glColor4f(255, 0, 0, 255);
                     glVertex3f(vertex->getX(), vertex->getY(), vertex->getZ());
-                    glVertex3f(vertex->getX() + vector->x(),
-                               vertex->getY() + vector->y(),
-                               vertex->getZ() + vector->z());
+                    glColor4f(255, 0, 0, 255);
+                    glVertex3f(x, y, z);
                 }
                 glEnd();
             }

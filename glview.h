@@ -83,12 +83,12 @@ protected:
     void paintGL();
 
     // QWidget interface
-protected:
-    void mousePressEvent(QMouseEvent *event);
-
-    // QWidget interface
 public:
     void keyPressEvent(QKeyEvent *event);
+
+    // QWidget interface
+protected:
+    void mousePressEvent(QMouseEvent *event);
 
     // QWidget interface
 protected:

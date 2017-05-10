@@ -407,7 +407,7 @@
         <item row="2" column="0">
          <widget class="QLabel" name="label_9">
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click SPLINE(button - green) - Paintig of Spline (--)&lt;/p&gt;&lt;p&gt;Click SPLINE(button - red) - Only show vertices and vectors (--)&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;DoubleLeftClick - Add Vertex (--)&lt;/p&gt;&lt;p&gt;DoubleLeftClick(drag) - Add Vertex - Move Vector (--)&lt;/p&gt;&lt;p&gt;LeftClick(drag) - Move Vertex (--)&lt;/p&gt;&lt;p&gt;RightClick(drag) - Move Vector (--)&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click SPLINE(button - green) - Paintig of Spline (--)&lt;/p&gt;&lt;p&gt;Click SPLINE(button - red) - Only show vertices and vectors (--)&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;DoubleLeftClick - Add Vertex (--)&lt;/p&gt;&lt;p&gt;DoubleLeftClick(drag) - Add Vertex - Move Vector (--)&lt;/p&gt;&lt;p&gt;LeftClick(drag) - Move Vertex (++)&lt;/p&gt;&lt;p&gt;RightClick(drag) - Move Vector (--)&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
          </widget>
         </item>

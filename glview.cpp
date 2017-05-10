@@ -293,8 +293,8 @@ void GLView::paintGL()
 
                 //Paint Right vector
                 vector = vertex->getVectorRight();
-                x = vertex->getX() + vector->x() + 0.1f;
-                y = vertex->getY() + vector->y() + 0.1f;
+                x = vertex->getX() + vector->x() + 0.05f;
+                y = vertex->getY() + vector->y() + 0.05f;
                 z = vertex->getZ() + vector->z();
 
                 glBegin( GL_POINTS );
@@ -377,44 +377,6 @@ void GLView::setScissorTestEnabled(bool enabled, int x, int y, int width, int he
     }
 }
 
-void GLView::mousePressEvent(QMouseEvent *event)
-{
-    float x = event->localPos().x();
-    float y = event->localPos().y();
-
-    x =  2 * x / static_cast<float>(this->size().width()) - 1.0f;
-    y =  2 * -y / static_cast<float>(this->size().height()) + 1.0f;
-    switch ( m_state ) {
-    case STATE_DRAW:
-        m_vertices->push_back({x, y, 0.0f, m_currentColor});
-        break;
-    case STATE_SCISSORS:
-        m_startPoint = event->pos();
-        m_rubberBand->setGeometry(QRect(m_startPoint, QSize()));
-        m_rubberBand->show();
-        break;
-    case STATE_ERASE:
-        break;
-    case STATE_SELECT:
-        m_startPoint = event->pos();
-        m_rubberBand->setGeometry(QRect(m_startPoint, QSize()));
-        m_rubberBand->show();
-        break;
-    case STATE_SPLINE:
-        qDebug() << "STATE_SPLINE - Mouse Press";
-        if (m_selectedVertices.empty()) {
-            break;
-        }
-        qDebug() << "Selected items";
-        foreach (Vertex* selectedVertex, m_selectedVertices) {
-            qDebug() << selectedVertex->getX();
-        }
-        break;
-    default:
-        qDebug() << "Error mousePressEvent, m_state:" << m_state;
-    }
-}
-
 void GLView::keyPressEvent(QKeyEvent *event)
 {
     qDebug() << "Key view";
@@ -454,24 +416,155 @@ void GLView::keyPressEvent(QKeyEvent *event)
     }
 }
 
+void GLView::mousePressEvent(QMouseEvent *event)
+{
+    float x = event->localPos().x();
+    float y = event->localPos().y();
+
+    x =  2 * x / static_cast<float>(this->size().width()) - 1.0f;
+    y =  2 * -y / static_cast<float>(this->size().height()) + 1.0f;
+
+    // For Spline
+    QVector3D* vector;
+    float radiusX;
+    float radiusY;
+    //    int i = 0;
+
+    switch ( m_lab ) {
+    case Labs::LAB_1_2:
+    case Labs::LAB_3:
+        switch ( m_state ) {
+        case STATE_DRAW:
+            m_vertices->push_back({x, y, 0.0f, m_currentColor});
+            break;
+        case STATE_SCISSORS:
+            m_startPoint = event->pos();
+            m_rubberBand->setGeometry(QRect(m_startPoint, QSize()));
+            m_rubberBand->show();
+            break;
+        case STATE_ERASE:
+            break;
+        case STATE_SELECT:
+            m_startPoint = event->pos();
+            m_rubberBand->setGeometry(QRect(m_startPoint, QSize()));
+            m_rubberBand->show();
+            break;
+        case STATE_SPLINE:
+            qDebug() << "STATE_SPLINE - Mouse Press";
+            if (m_selectedVertices.empty()) {
+                break;
+            }
+            qDebug() << "Selected items";
+            foreach (Vertex* selectedVertex, m_selectedVertices) {
+                qDebug() << selectedVertex->getX();
+            }
+            break;
+        default:
+            qDebug() << "Error mousePressEvent, m_state:" << m_state;
+        }
+    case Labs::LAB_4:
+        switch ( m_state ) {
+        case STATE_DRAW:
+        case STATE_SCISSORS:
+        case STATE_ERASE:
+        case STATE_SELECT:
+            break;
+        case STATE_NONE:
+        case STATE_SPLINE:
+            radiusX = 2 * m_vertexRadius / static_cast<float>(this->size().width());
+            radiusY = 2 * m_vertexRadius / static_cast<float>(this->size().height());
+            qDebug() << "radiusX =" << radiusX
+                     << "radiusY =" << radiusY;
+            //            radiusX = radiusY = m_vertexRadius / 100;
+
+            if ( event->buttons() == Qt::LeftButton ) {
+                for (SplineVertex* vertex : m_splineVertices) {
+                    //                    qDebug() << "i  =" << i
+                    //                             << "x  =" << x
+                    //                             << "y  =" << y
+                    //                             << "x-r=" << vertex->getX() - radiusX
+                    //                             << "x+r=" << vertex->getX() + radiusX
+                    //                             << "y-r=" << vertex->getY() - radiusY
+                    //                             << "y+r=" << vertex->getY() + radiusY;
+                    //                    i++;
+
+                    if (vertex->getX() - radiusX < x &&
+                            vertex->getX() + radiusX > x &&
+                            vertex->getY() - radiusY < y &&
+                            vertex->getY() + radiusY > y) {
+                        m_selectedVertices.clear();
+                        m_selectedVertices.push_back(vertex);
+                        //                        qDebug() << "Size of selected = " << m_selectedVertices.size();
+                    }
+                }
+            }
+
+            break;
+        default:
+            break;
+        }
+
+        break;
+    default:
+        break;
+    }
+}
+
 void GLView::mouseMoveEvent(QMouseEvent *event)
 {
-    qDebug() << "State" << m_state;
-    switch ( m_state ) {
-    case STATE_DRAW:
-        if ( event->buttons() == Qt::LeftButton) {
-            this->mousePressEvent(event);
+    float x;
+    float y;
+
+    switch ( m_lab ) {
+    case Labs::LAB_1_2:
+    case Labs::LAB_3:
+        switch ( m_state ) {
+        case STATE_DRAW:
+            if ( event->buttons() == Qt::LeftButton) {
+                this->mousePressEvent(event);
+            }
+            break;
+        case STATE_SCISSORS:
+            m_rubberBand->setGeometry(QRect(m_startPoint, event->pos()).normalized());
+            break;
+        case STATE_ERASE:
+            break;
+        case STATE_SELECT:
+            m_rubberBand->setGeometry(QRect(m_startPoint, event->pos()).normalized());
+            break;
+        case STATE_SPLINE:
+            break;
+        default:
+            break;
         }
-        break;
-    case STATE_SCISSORS:
-        m_rubberBand->setGeometry(QRect(m_startPoint, event->pos()).normalized());
-        break;
-    case STATE_ERASE:
-        break;
-    case STATE_SELECT:
-        m_rubberBand->setGeometry(QRect(m_startPoint, event->pos()).normalized());
-        break;
-    case STATE_SPLINE:
+    case Labs::LAB_4:
+        switch ( m_state ) {
+        case STATE_DRAW:
+        case STATE_SCISSORS:
+        case STATE_ERASE:
+        case STATE_SELECT:
+            break;
+        case STATE_NONE:
+        case STATE_SPLINE:
+            if ( !m_selectedVertices.empty() ) {
+                x = event->localPos().x();
+                y = event->localPos().y();
+                x =  2 * x / static_cast<float>(this->size().width()) - 1.0f;
+                y =  2 * -y / static_cast<float>(this->size().height()) + 1.0f;
+
+                m_selectedVertices.front()->setX(x);
+                m_selectedVertices.front()->setY(y);
+            }
+            //            qDebug() << "NewPos"
+            //                     << "x  =" << x
+            //                     << "y  =" << y
+            //                     << "xn =" << m_selectedVertices.at(0)->getX()
+            //                     << "xn =" << m_selectedVertices.at(0)->getY();
+            break;
+        default:
+            break;
+        }
+
         break;
     default:
         break;
@@ -480,40 +573,71 @@ void GLView::mouseMoveEvent(QMouseEvent *event)
 
 void GLView::mouseReleaseEvent(QMouseEvent *event)
 {
-    float xLeft, xRight, yBottom, yTop;
-    qDebug() << "State" << m_state;
-    switch ( m_state ) {
-    case STATE_DRAW:
-        break;
-    case STATE_SCISSORS:
-        emit scissorsRectChanged(*m_rubberBand);
+    float xLeft, xRight, yBottom, yTop, x, y;
 
-        m_rubberBand->hide();
-        setScissorTestEnabled(true,
-                              m_rubberBand->x(),
-                              this->height() - m_rubberBand->y() - m_rubberBand->height(),
-                              m_rubberBand->width(),
-                              m_rubberBand->height());
-        break;
-    case STATE_ERASE:
-        break;
-    case STATE_SELECT:
-        m_rubberBand->hide();
-        m_selectedVertices.clear();
+    switch ( m_lab ) {
+    case Labs::LAB_1_2:
+    case Labs::LAB_3:
+        switch ( m_state ) {
+        case STATE_DRAW:
+            break;
+        case STATE_SCISSORS:
+            emit scissorsRectChanged(*m_rubberBand);
 
-        xLeft    =  2 * m_rubberBand->geometry().left()     / static_cast<float>(this->size().width()) - 1.0f;
-        xRight   =  2 * m_rubberBand->geometry().right()    / static_cast<float>(this->size().width()) - 1.0f;
-        yBottom  =  2 * -m_rubberBand->geometry().bottom()  / static_cast<float>(this->size().height()) + 1.0f;
-        yTop     =  2 * -m_rubberBand->geometry().top()     / static_cast<float>(this->size().height()) + 1.0f;
+            m_rubberBand->hide();
+            setScissorTestEnabled(true,
+                                  m_rubberBand->x(),
+                                  this->height() - m_rubberBand->y() - m_rubberBand->height(),
+                                  m_rubberBand->width(),
+                                  m_rubberBand->height());
+            break;
+        case STATE_ERASE:
+            break;
+        case STATE_SELECT:
+            m_rubberBand->hide();
+            m_selectedVertices.clear();
 
-        for ( auto& vertex : *(m_vertices.get())) {
-            if ( vertex.getX() > xLeft &&
-                 vertex.getX() < xRight &&
-                 vertex.getY() > yBottom &&
-                 vertex.getY() < yTop) {
-                m_selectedVertices.push_back(&vertex);
+            xLeft    =  2 * m_rubberBand->geometry().left()     / static_cast<float>(this->size().width()) - 1.0f;
+            xRight   =  2 * m_rubberBand->geometry().right()    / static_cast<float>(this->size().width()) - 1.0f;
+            yBottom  =  2 * -m_rubberBand->geometry().bottom()  / static_cast<float>(this->size().height()) + 1.0f;
+            yTop     =  2 * -m_rubberBand->geometry().top()     / static_cast<float>(this->size().height()) + 1.0f;
+
+            for ( auto& vertex : *(m_vertices.get())) {
+                if ( vertex.getX() > xLeft &&
+                     vertex.getX() < xRight &&
+                     vertex.getY() > yBottom &&
+                     vertex.getY() < yTop) {
+                    m_selectedVertices.push_back(&vertex);
+                }
             }
+            break;
+        default:
+            break;
         }
+    case Labs::LAB_4:
+        switch ( m_state ) {
+        case STATE_DRAW:
+        case STATE_SCISSORS:
+        case STATE_ERASE:
+        case STATE_SELECT:
+            break;
+        case STATE_NONE:
+        case STATE_SPLINE:
+            if ( !m_selectedVertices.empty() ) {
+                x = event->localPos().x();
+                y = event->localPos().y();
+                x =  2 * x / static_cast<float>(this->size().width()) - 1.0f;
+                y =  2 * -y / static_cast<float>(this->size().height()) + 1.0f;
+
+                m_selectedVertices.front()->setX(x);
+                m_selectedVertices.front()->setY(y);
+            }
+            m_selectedVertices.clear();
+            break;
+        default:
+            break;
+        }
+
         break;
     default:
         break;

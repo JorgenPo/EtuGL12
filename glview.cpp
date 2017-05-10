@@ -384,10 +384,8 @@ void GLView::mousePressEvent(QMouseEvent *event)
 
     x =  2 * x / static_cast<float>(this->size().width()) - 1.0f;
     y =  2 * -y / static_cast<float>(this->size().height()) + 1.0f;
-    qDebug() << "State" << m_state;
     switch ( m_state ) {
     case STATE_DRAW:
-        qDebug() << "i'm here";
         m_vertices->push_back({x, y, 0.0f, m_currentColor});
         break;
     case STATE_SCISSORS:

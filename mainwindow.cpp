@@ -284,12 +284,11 @@ void MainWindow::on_tabWidget_currentChanged(int index)
         emit labChanged(GLView::Labs::LAB_1_2);
         break;
     case 2:
-//        m_toolBarActionGroup->checkedAction()->setChecked(false);
         qDebug() << "cur tab = Lab_4";
         ui->mainToolBar->hide();
-//        ui->openGLWidget->setState(GLView::STATE_ERASE);
-        ui->openGLWidget->setState(GLView::STATE_NONE);
+        ui->pushButton_actionSpline->setChecked(false);
         ui->pushButton_actionSpline->setStyleSheet("background-color: rgb(255, 0, 0);");
+        ui->openGLWidget->setState(GLView::STATE_NONE);
         emit labChanged(GLView::Labs::LAB_4);
         break;
     default:

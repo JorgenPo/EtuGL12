@@ -255,7 +255,7 @@ void MainWindow::onScissorsRectChanged(const QRubberBand& rubberBand)
 
 void MainWindow::on_comboBox_splineTypes_activated(const QString &arg1)
 {
-
+    //TODO Add more Spline types
 }
 
 void MainWindow::on_pushButton_actionSpline_clicked()
@@ -265,11 +265,16 @@ void MainWindow::on_pushButton_actionSpline_clicked()
         ui->pushButton_actionSpline->setStyleSheet("background-color: rgb(0, 255, 0);");
         ui->openGLWidget->setState(GLView::STATE_SPLINE);
         emit stateChanged(GLView::STATE_SPLINE);
+
+        //TODO Add Spline realization!!!
+
         return;
     }
     ui->pushButton_actionSpline->setStyleSheet("background-color: rgb(255, 0, 0);");
     ui->openGLWidget->setState(GLView::STATE_NONE);
     emit stateChanged(GLView::STATE_NONE);
+
+    //TODO Remove Spline realization!!!
 }
 
 void MainWindow::on_tabWidget_currentChanged(int index)

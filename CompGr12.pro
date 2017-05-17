@@ -5,7 +5,6 @@
 #-------------------------------------------------
 
 QT       += core gui opengl
-LIBS += -lopengl32
 
 CONFIG += c++11 c++14
 
@@ -32,14 +31,20 @@ SOURCES += main.cpp\
     mesh.cpp \
     vertex.cpp \
     ifractal.cpp \
-    splinevertex.cpp
+    splinevertex.cpp \
+    application.cpp \
+    graphicsmesh.cpp \
+    abstractscene.cpp
 
 HEADERS  += mainwindow.h \
     glview.h \
     mesh.h \
     vertex.h \
     ifractal.h \
-    splinevertex.h
+    splinevertex.h \
+    application.h \
+    graphicsmesh.h \
+    abstractscene.h
 
 FORMS    += \
     mainwindow.ui
@@ -48,3 +53,9 @@ RESOURCES += \
     resources.qrc
 
 INCLUDEPATH += .
+
+DISTFILES += \
+    shaders/simple.vert \
+    shaders/simple.frag \
+    ../build-CompGr12-Desktop_Qt_5_8_0_GCC_64bit-Debug/shaders/simple.frag \
+    ../build-CompGr12-Desktop_Qt_5_8_0_GCC_64bit-Debug/shaders/simple.vert

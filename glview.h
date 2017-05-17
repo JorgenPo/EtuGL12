@@ -1,6 +1,7 @@
 #ifndef GLVIEW_H
 #define GLVIEW_H
 
+#include "abstractscene.h"
 #include "ifractal.h"
 #include "mesh.h"
 #include "splinevertex.h"
@@ -11,7 +12,7 @@
 #include <QOpenGLBuffer>
 #include <QRubberBand>
 
-class GLView : public QOpenGLWidget
+class GLView : public AbstractScene
 {
     Q_OBJECT
 
@@ -46,7 +47,6 @@ signals:
     void stateSplineSelected();
 
 public slots:
-    void setPrimitiveType(int type);
     void clearVertices();
     void fractalize();
     void copyVertices();
@@ -55,9 +55,6 @@ public slots:
 
     void setLab(GLView::Labs lab);
     void showSpline(GLView::State state);
-
-    void setColor(const QColor&);
-    void setBackgroundColor(const QColor&);
 
     void setAlphaTestEnabled(bool enabled);
     void setBlendingEnabled(bool enabled);
@@ -120,11 +117,6 @@ private:
     std::vector<SplineVertex*>      m_splineVertices;
     const size_t m_vertexRadius = 10.0f;
     QVector3D* m_splineCurVector;
-
-    int    m_primitiveType;
-
-    QColor m_currentColor;
-    QColor m_backgroundColor;
 
     State  m_state = State::STATE_DRAW;
     Labs   m_lab   = Labs::LAB_1_2;

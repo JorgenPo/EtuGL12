@@ -115,8 +115,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_toolBarActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(setStateFromAction(QAction*)));
 //    connect(m_toolBarActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(setStateFromAction(QAction*)));
 
-    ui->openGLWidget->setScissorTestEnabled(true, 0, 0,
-                                            this->size().width(), this->size().height());
+//    ui->openGLWidget->setScissorTestEnabled(true, 0, 0,
+//                                            this->size().width(), this->size().height());
 
     connect(ui->openGLWidget, SIGNAL(scissorsRectChanged(const QRubberBand&)), this, SLOT(onScissorsRectChanged(const QRubberBand&)));
 
@@ -124,8 +124,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionCopy, SIGNAL(triggered(bool)), ui->openGLWidget, SLOT(copyVertices()));
     connect(ui->actionPaste, SIGNAL(triggered(bool)), ui->openGLWidget, SLOT(pasteVertices()));
 
-    connect(this, SIGNAL(stateChanged(GLView::State)), ui->openGLWidget, SLOT(showSpline(GLView::State)));
-    connect(this, SIGNAL(labChanged(GLView::Labs)), ui->openGLWidget, SLOT(setLab(GLView::Labs)));
+    //connect(this, SIGNAL(stateChanged(GLView::State)), ui->openGLWidget, SLOT(showSpline(GLView::State)));
+    //connect(this, SIGNAL(labChanged(GLView::Labs)), ui->openGLWidget, SLOT(setLab(GLView::Labs)));
 }
 
 MainWindow::~MainWindow()
@@ -147,7 +147,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     default:
         break;
     }
-    ui->openGLWidget->keyPressEvent(event);
+//    ui->openGLWidget->keyPressEvent(event);
 }
 
 
@@ -173,7 +173,7 @@ void MainWindow::on_fontColorButton_clicked()
 
     ui->fontColorButton->setPalette(QPalette(color));
 
-    ui->openGLWidget->setBackgroundColor(color);
+//    ui->openGLWidget->setBackgroundColor(color);
 }
 
 void MainWindow::on_comboAlpha_currentIndexChanged(int index)
@@ -183,12 +183,12 @@ void MainWindow::on_comboAlpha_currentIndexChanged(int index)
     if ( func == GL_ALWAYS ) {
         ui->sliderAlpha->setEnabled(false);
         ui->spinAlpha->setEnabled(false);
-        ui->openGLWidget->setAlphaTestEnabled(false);
+//        ui->openGLWidget->setAlphaTestEnabled(false);
     } else {
         ui->sliderAlpha->setEnabled(true);
         ui->spinAlpha->setEnabled(true);
-        ui->openGLWidget->setAlphaTestEnabled(true);
-        ui->openGLWidget->setAlphaFunction(func);
+//        ui->openGLWidget->setAlphaTestEnabled(true);
+//        ui->openGLWidget->setAlphaFunction(func);
     }
 
 }
@@ -197,7 +197,7 @@ void MainWindow::on_sliderAlpha_sliderMoved(int position)
 {
     float clampedValue = position / 100.0f;
 
-    ui->openGLWidget->setAlphaRef(clampedValue);
+//    ui->openGLWidget->setAlphaRef(clampedValue);
 
     ui->sliderAlpha->setToolTip(QString("Value = %1").arg(clampedValue));
 
@@ -213,14 +213,14 @@ void MainWindow::on_comboSFactor_currentIndexChanged(int index)
 {
     int value = ui->comboSFactor->itemData(index).toInt();
 
-    ui->openGLWidget->setBlendingSfactor(value);
+//    ui->openGLWidget->setBlendingSfactor(value);
 }
 
 void MainWindow::on_comboDFactor_currentIndexChanged(int index)
 {
     int value = ui->comboDFactor->itemData(index).toInt();
 
-    ui->openGLWidget->setBlendingDfactor(value);
+//    ui->openGLWidget->setBlendingDfactor(value);
 }
 
 void MainWindow::setStateFromAction(QAction *action)
@@ -228,16 +228,16 @@ void MainWindow::setStateFromAction(QAction *action)
     GLView::State state = static_cast<GLView::State>(action->data().toInt());
     switch (state) {
     case GLView::STATE_DRAW:
-        ui->openGLWidget->setState(GLView::STATE_DRAW);
+//        ui->openGLWidget->setState(GLView::STATE_DRAW);
         break;
     case GLView::STATE_SCISSORS:
-        ui->openGLWidget->setState(GLView::STATE_SCISSORS);
+//        ui->openGLWidget->setState(GLView::STATE_SCISSORS);
         break;
     case GLView::STATE_ERASE:
-        ui->openGLWidget->setState(GLView::STATE_ERASE);
+//        ui->openGLWidget->setState(GLView::STATE_ERASE);
         break;
     case GLView::STATE_SELECT:
-        ui->openGLWidget->setState(GLView::STATE_SELECT);
+//        ui->openGLWidget->setState(GLView::STATE_SELECT);
         break;
     default:
         qDebug() << "Error unknown state: " << state << "\n";
@@ -263,7 +263,7 @@ void MainWindow::on_pushButton_actionSpline_clicked()
     qDebug() << "Checked = " << ui->pushButton_actionSpline->isChecked();
     if ( ui->pushButton_actionSpline->isChecked() ) {
         ui->pushButton_actionSpline->setStyleSheet("background-color: rgb(0, 255, 0);");
-        ui->openGLWidget->setState(GLView::STATE_SPLINE);
+//        ui->openGLWidget->setState(GLView::STATE_SPLINE);
         emit stateChanged(GLView::STATE_SPLINE);
 
         //TODO Add Spline realization!!!
@@ -271,7 +271,7 @@ void MainWindow::on_pushButton_actionSpline_clicked()
         return;
     }
     ui->pushButton_actionSpline->setStyleSheet("background-color: rgb(255, 0, 0);");
-    ui->openGLWidget->setState(GLView::STATE_NONE);
+//    ui->openGLWidget->setState(GLView::STATE_NONE);
     emit stateChanged(GLView::STATE_NONE);
 
     //TODO Remove Spline realization!!!
@@ -285,7 +285,7 @@ void MainWindow::on_tabWidget_currentChanged(int index)
     case 1:
         qDebug() << "cur tab = Lab_1_2";
         ui->mainToolBar->show();
-        ui->openGLWidget->setState(GLView::STATE_DRAW);
+//        ui->openGLWidget->setState(GLView::STATE_DRAW);
         emit labChanged(GLView::Labs::LAB_1_2);
         break;
     case 2:
@@ -293,7 +293,7 @@ void MainWindow::on_tabWidget_currentChanged(int index)
         ui->mainToolBar->hide();
         ui->pushButton_actionSpline->setChecked(false);
         ui->pushButton_actionSpline->setStyleSheet("background-color: rgb(255, 0, 0);");
-        ui->openGLWidget->setState(GLView::STATE_NONE);
+//        ui->openGLWidget->setState(GLView::STATE_NONE);
         emit labChanged(GLView::Labs::LAB_4);
         break;
     default:

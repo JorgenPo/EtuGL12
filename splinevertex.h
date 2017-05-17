@@ -2,6 +2,7 @@
 #define SPLINEVERTEX_H
 
 #include "vertex.h"
+#include <QGraphicsObject>
 
 class SplineVertex : public Vertex
 {

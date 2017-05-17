@@ -6,15 +6,14 @@
 #include <QMatrix4x4>
 #include <QtMath>
 
-GLView::GLView(QWidget *parent) : QOpenGLWidget(parent),
-    m_vMesh(),
+GLView::GLView(QWidget *parent)
+    : m_vMesh(),
     m_vertices(), m_selectedVertices(), m_copiedVertices(),
     m_splineVertices(),
-    m_primitiveType(1), m_currentColor(), m_backgroundColor(),
-    m_startPoint(0, 0),
     m_splineCurVector(nullptr),
+    m_state(State::STATE_DRAW),
     m_lab(Labs::LAB_1_2),
-    m_state(State::STATE_DRAW)
+    m_startPoint(0, 0)
 {
     m_vMesh = std::make_unique<Mesh>(nullptr, QOpenGLBuffer::DynamicDraw);
 
@@ -30,9 +29,6 @@ GLView::GLView(QWidget *parent) : QOpenGLWidget(parent),
     format.setSamples(16);
 
     this->setFormat(format);
-
-    m_currentColor = Qt::black;
-    m_backgroundColor = Qt::white;
 
     m_rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
     m_rubberBand->setPalette(QPalette(Qt::blue));
@@ -54,11 +50,6 @@ GLView::~GLView()
     if ( m_fractalizer ) {
         delete m_fractalizer;
     }
-}
-
-void GLView::setPrimitiveType(int type)
-{
-    m_primitiveType = type;
 }
 
 void GLView::clearVertices()
@@ -118,24 +109,6 @@ void GLView::showSpline(GLView::State state)
     qDebug() << "Show spline " << state;
     if ( state == State::STATE_SPLINE ) {
         qDebug() << "Spline " << state;
-    }
-}
-
-void GLView::setColor(const QColor &color)
-{
-    if ( !color.isValid() ) {
-        m_currentColor = Qt::black;
-    } else {
-        m_currentColor = color;
-    }
-}
-
-void GLView::setBackgroundColor(const QColor &color)
-{
-    if ( !color.isValid() ) {
-        m_backgroundColor = Qt::black;
-    } else {
-        m_backgroundColor = color;
     }
 }
 
@@ -213,7 +186,7 @@ void GLView::resizeGL(int w, int h)
 }
 
 void GLView::paintGL()
-{
+{/*
     glEnable(GL_SCISSOR_TEST);
     glScissor(m_scissorX, m_scissorY, m_scissorWidth, m_scissorHeight);
 
@@ -340,7 +313,7 @@ void GLView::paintGL()
         glDisable(GL_BLEND);
     }
 
-    glDisable(GL_SCISSOR_TEST);
+    glDisable(GL_SCISSOR_TEST);*/
 }
 
 void GLView::setState(const State &state)
@@ -467,99 +440,99 @@ void GLView::mousePressEvent(QMouseEvent *event)
     //    int i = 0;
 
     switch ( m_lab ) {
-    case Labs::LAB_1_2:
-    case Labs::LAB_3:
-        switch ( m_state ) {
-        case STATE_DRAW:
-            m_vertices->push_back({x, y, 0.0f, m_currentColor});
-            break;
-        case STATE_SCISSORS:
-            m_startPoint = event->pos();
-            m_rubberBand->setGeometry(QRect(m_startPoint, QSize()));
-            m_rubberBand->show();
-            break;
-        case STATE_ERASE:
-            break;
-        case STATE_SELECT:
-            m_startPoint = event->pos();
-            m_rubberBand->setGeometry(QRect(m_startPoint, QSize()));
-            m_rubberBand->show();
-            break;
-        case STATE_SPLINE:
-            qDebug() << "STATE_SPLINE - Mouse Press";
-            if (m_selectedVertices.empty()) {
-                break;
-            }
-            qDebug() << "Selected items";
-            foreach (Vertex* selectedVertex, m_selectedVertices) {
-                qDebug() << selectedVertex->getX();
-            }
-            break;
-        default:
-            qDebug() << "Error mousePressEvent, m_state:" << m_state;
-        }
-        break;
+//    case Labs::LAB_1_2:
+//    case Labs::LAB_3:
+//        switch ( m_state ) {
+//        case STATE_DRAW:
+//            m_vertices->push_back({x, y, 0.0f, m_currentColor});
+//            break;
+//        case STATE_SCISSORS:
+//            m_startPoint = event->pos();
+//            m_rubberBand->setGeometry(QRect(m_startPoint, QSize()));
+//            m_rubberBand->show();
+//            break;
+//        case STATE_ERASE:
+//            break;
+//        case STATE_SELECT:
+//            m_startPoint = event->pos();
+//            m_rubberBand->setGeometry(QRect(m_startPoint, QSize()));
+//            m_rubberBand->show();
+//            break;
+//        case STATE_SPLINE:
+//            qDebug() << "STATE_SPLINE - Mouse Press";
+//            if (m_selectedVertices.empty()) {
+//                break;
+//            }
+//            qDebug() << "Selected items";
+//            foreach (Vertex* selectedVertex, m_selectedVertices) {
+//                qDebug() << selectedVertex->getX();
+//            }
+//            break;
+//        default:
+//            qDebug() << "Error mousePressEvent, m_state:" << m_state;
+//        }
+//        break;
 
-    case Labs::LAB_4:
-        switch ( m_state ) {
-        case STATE_DRAW:
-        case STATE_SCISSORS:
-        case STATE_ERASE:
-        case STATE_SELECT:
-            break;
-        case STATE_NONE:
-        case STATE_SPLINE:
-            radiusX = 2 * m_vertexRadius / static_cast<float>(this->size().width());
-            radiusY = 2 * m_vertexRadius / static_cast<float>(this->size().height());
-            qDebug() << "radiusX =" << radiusX
-                     << "radiusY =" << radiusY;
-            //            radiusX = radiusY = m_vertexRadius / 100;
+//    case Labs::LAB_4:
+//        switch ( m_state ) {
+//        case STATE_DRAW:
+//        case STATE_SCISSORS:
+//        case STATE_ERASE:
+//        case STATE_SELECT:
+//            break;
+//        case STATE_NONE:
+//        case STATE_SPLINE:
+//            radiusX = 2 * m_vertexRadius / static_cast<float>(this->size().width());
+//            radiusY = 2 * m_vertexRadius / static_cast<float>(this->size().height());
+//            qDebug() << "radiusX =" << radiusX
+//                     << "radiusY =" << radiusY;
+//            //            radiusX = radiusY = m_vertexRadius / 100;
 
-            if ( event->buttons() == Qt::LeftButton ) {
-                for (SplineVertex* vertex : m_splineVertices) {
-                    //                    qDebug() << "i  =" << i
-                    //                             << "x  =" << x
-                    //                             << "y  =" << y
-                    //                             << "x-r=" << vertex->getX() - radiusX
-                    //                             << "x+r=" << vertex->getX() + radiusX
-                    //                             << "y-r=" << vertex->getY() - radiusY
-                    //                             << "y+r=" << vertex->getY() + radiusY;
-                    //                    i++;
+//            if ( event->buttons() == Qt::LeftButton ) {
+//                for (SplineVertex* vertex : m_splineVertices) {
+//                    //                    qDebug() << "i  =" << i
+//                    //                             << "x  =" << x
+//                    //                             << "y  =" << y
+//                    //                             << "x-r=" << vertex->getX() - radiusX
+//                    //                             << "x+r=" << vertex->getX() + radiusX
+//                    //                             << "y-r=" << vertex->getY() - radiusY
+//                    //                             << "y+r=" << vertex->getY() + radiusY;
+//                    //                    i++;
 
-                    if ( isSelectedSplineVertex(vertex->getPosition(),
-                                                x, y, radiusX, radiusY)) {
-                        m_selectedVertices.clear();
-                        m_selectedVertices.push_back(vertex);
-                        //                        qDebug() << "Size of selected = " << m_selectedVertices.size();
-                    }
-                }
-            } else if ( event->buttons() == Qt::RightButton ) {
-                for (SplineVertex* vertex : m_splineVertices) {
-                    if ( isSelectedSplineVector(*vertex->getVectorRight(),
-                                                vertex->getPosition(),
-                                                x, y, radiusX, radiusY) ) {
-                        m_selectedVertices.clear();
-                        m_selectedVertices.push_back(vertex);
-                        m_splineCurVector = vertex->getVectorRight();
-                        qDebug() << m_splineCurVector << vertex->getVectorRight();
-                        break;
-                    }
-                    if ( isSelectedSplineVector(*vertex->getVectorLeft(),
-                                                vertex->getPosition(),
-                                                x, y, radiusX, radiusY) ) {
-                        m_selectedVertices.clear();
-                        m_selectedVertices.push_back(vertex);
-                        m_splineCurVector = vertex->getVectorLeft();
-                        qDebug() << m_splineCurVector << vertex->getVectorLeft();
-                        break;
-                    }
-                }
-            }
-            break;
-        default:
-            break;
-        }
-        break;
+//                    if ( isSelectedSplineVertex(vertex->getPosition(),
+//                                                x, y, radiusX, radiusY)) {
+//                        m_selectedVertices.clear();
+//                        m_selectedVertices.push_back(vertex);
+//                        //                        qDebug() << "Size of selected = " << m_selectedVertices.size();
+//                    }
+//                }
+//            } else if ( event->buttons() == Qt::RightButton ) {
+//                for (SplineVertex* vertex : m_splineVertices) {
+//                    if ( isSelectedSplineVector(*vertex->getVectorRight(),
+//                                                vertex->getPosition(),
+//                                                x, y, radiusX, radiusY) ) {
+//                        m_selectedVertices.clear();
+//                        m_selectedVertices.push_back(vertex);
+//                        m_splineCurVector = vertex->getVectorRight();
+//                        qDebug() << m_splineCurVector << vertex->getVectorRight();
+//                        break;
+//                    }
+//                    if ( isSelectedSplineVector(*vertex->getVectorLeft(),
+//                                                vertex->getPosition(),
+//                                                x, y, radiusX, radiusY) ) {
+//                        m_selectedVertices.clear();
+//                        m_selectedVertices.push_back(vertex);
+//                        m_splineCurVector = vertex->getVectorLeft();
+//                        qDebug() << m_splineCurVector << vertex->getVectorLeft();
+//                        break;
+//                    }
+//                }
+//            }
+//            break;
+//        default:
+//            break;
+//        }
+//        break;
 
     default:
         break;

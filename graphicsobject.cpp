@@ -1,4 +1,4 @@
-#include "graphicsmesh.h"
+#include "graphicsobject.h"
 
 #include <QColor>
 #include <QDebug>

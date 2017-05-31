@@ -1,4 +1,5 @@
 #include "application.h"
+#include "utils.h"
 #include <QMouseEvent>
 #include <QSurfaceFormat>
 
@@ -59,9 +60,11 @@ void Application::resizeGL(int w, int h)
 void Application::paintGL()
 {
     glClearColor(0.0f, 0.8f, 0.9f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear( GL_COLOR_BUFFER_BIT );
+    glEnable( GL_PROGRAM_POINT_SIZE );
 
     m_program->bind();
+    m_program->setUniformValue("pointSize", m_radius);
 
     m_graphics->render(m_primitiveType);
 
@@ -70,11 +73,126 @@ void Application::paintGL()
 
 void Application::mousePressEvent(QMouseEvent *event)
 {
-    float x = event->localPos().x();
-    float y = event->localPos().y();
+    qDebug() << "mousePressed";
+    float x = Utils::getInstanse().getAbsoluteX(event, this->size());
+    float y = Utils::getInstanse().getAbsoluteY(event, this->size());
+    float radiusX;
+    float radiusY;
+    radiusX = 2 * m_radius / static_cast<float>(this->size().width());
+    radiusY = 2 * m_radius / static_cast<float>(this->size().height());
 
-    x =  2 * x / static_cast<float>(this->size().width()) - 1.0f;
-    y =  2 * -y / static_cast<float>(this->size().height()) + 1.0f;
+    if ( event->buttons() == Qt::LeftButton ) {
+        // If pressed LeftButton -> add SplineVertex to selectedVertices
+        for (SplineVertex* vertex : m_splineVertices) {
+            if ( isSelectedSplineVertex(vertex->getPosition(),
+                                        x, y, radiusX, radiusY)) {
+                m_selectedVertices.clear();
+                m_selectedVertices.push_back(vertex);
+            }
+        }
+    } else if ( event->buttons() == Qt::RightButton ) {
+        // If pressed RightButton -> add Vector to curVector
+        for (SplineVertex* vertex : m_splineVertices) {
+            // Add RightVector
+            if ( isSelectedSplineVector(*vertex->getVectorRight(),
+                                        vertex->getPosition(),
+                                        x, y, radiusX, radiusY) ) {
+                m_selectedVertices.clear();
+                m_selectedVertices.push_back(vertex);
+                m_splineCurVector = vertex->getVectorRight();
+                qDebug() << m_splineCurVector << vertex->getVectorRight();
+                break;
+            }
+            // Add LeftVector
+            if ( isSelectedSplineVector(*vertex->getVectorLeft(),
+                                        vertex->getPosition(),
+                                        x, y, radiusX, radiusY) ) {
+                m_selectedVertices.clear();
+                m_selectedVertices.push_back(vertex);
+                m_splineCurVector = vertex->getVectorLeft();
+                qDebug() << m_splineCurVector << vertex->getVectorLeft();
+                break;
+            }
+        }
+    }
+}
 
-    m_graphics->addPoint({x, y}, { m_currentColor.red(), m_currentColor.green(), m_currentColor.blue() });
+void Application::mouseMoveEvent(QMouseEvent *event)
+{
+    qDebug() << "mouseMoved";
+    if ( !m_selectedVertices.empty() ) {
+        float x = Utils::getInstanse().getAbsoluteX(event, this->size());
+        float y = Utils::getInstanse().getAbsoluteY(event, this->size());
+
+        if ( event->buttons() == Qt::LeftButton ) {
+            // If moved LeftButton -> move selectedVertices
+            m_selectedVertices.front()->setX(x);
+            m_selectedVertices.front()->setY(y);
+        } else if ( event->buttons() == Qt::RightButton ) {
+            // If moved RightButton -> move curVector
+            *m_splineCurVector = QVector3D(x, y, 0) - m_selectedVertices.front()->getPosition();
+        }
+    }
+}
+
+void Application::mouseReleaseEvent(QMouseEvent *event)
+{
+    qDebug() << "mouseReleased";
+    if ( !m_selectedVertices.empty() ) {
+        float x = Utils::getInstanse().getAbsoluteX(event, this->size());
+        float y = Utils::getInstanse().getAbsoluteY(event, this->size());
+
+        if ( event->buttons() == Qt::LeftButton ) {
+            m_selectedVertices.front()->setX(x);
+            m_selectedVertices.front()->setY(y);
+        } else if ( event->buttons() == Qt::RightButton ) {
+            *m_splineCurVector = QVector3D(x, y, 0) - m_selectedVertices.front()->getPosition();
+        }
+        m_selectedVertices.clear();
+    }
+}
+
+void Application::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    float x = Utils::getInstanse().getAbsoluteX(event, this->size());
+    float y = Utils::getInstanse().getAbsoluteY(event, this->size());
+    m_graphics->addPoint({x, y}, { m_currentColor.red(),
+                                   m_currentColor.green(),
+                                   m_currentColor.blue() });
+}
+
+bool Application::isSelectedSplineVertex(const QVector3D &vertexPos,
+                                         const float &xCoord,
+                                         const float &yCoord,
+                                         const float &radiusX,
+                                         const float &radiusY)
+{
+    float vertexX = vertexPos.x();
+    float vertexY = vertexPos.y();
+    if (vertexX - radiusX < xCoord &&
+            vertexX + radiusX > xCoord &&
+            vertexY - radiusY < yCoord &&
+            vertexY + radiusY > yCoord) {
+        return 1;
+    }
+    return 0;
+
+}
+
+bool Application::isSelectedSplineVector(const QVector3D &vectorPos,
+                                         const QVector3D &vertexPos,
+                                         const float &xCoord,
+                                         const float &yCoord,
+                                         const float &radiusX,
+                                         const float &radiusY)
+{
+    float vectorX = vertexPos.x() + vectorPos.x();
+    float vectorY = vertexPos.y() + vectorPos.y();
+    if (vectorX - radiusX < xCoord &&
+            vectorX + radiusX > xCoord &&
+            vectorY - radiusY < yCoord &&
+            vectorY + radiusY > yCoord) {
+        return 1;
+    }
+    return 0;
 }

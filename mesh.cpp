@@ -36,17 +36,16 @@ Mesh::Mesh(std::vector<Vertex> *vertices, QOpenGLBuffer::UsagePattern usage)
  * @param count  Count in vertices
  * @deprecated Non-shader function. Must be replaced!
  */
-void Mesh::render(int offset, int count)
-{
-    if ( m_data ) {
-        for ( const auto &vertex : *m_data ) {
-            glColor4f(vertex.getR(), vertex.getG(),
-                      vertex.getB(), vertex.getA());
-
-            glVertex3f(vertex.getX(), vertex.getY(), vertex.getZ());
-        }
-    }
-}
+//void Mesh::render(int offset, int count)
+//{
+//    if ( m_data ) {
+//        for ( const auto &vertex : *m_data ) {
+//            glColor4f(vertex.getR(), vertex.getG(),
+//                      vertex.getB(), vertex.getA());
+//            glVertex3f(vertex.getX(), vertex.getY(), vertex.getZ());
+//        }
+//    }
+//}
 
 void Mesh::setData(const std::vector<Vertex> &vertices)
 {

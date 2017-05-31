@@ -33,8 +33,9 @@ SOURCES += main.cpp\
     ifractal.cpp \
     splinevertex.cpp \
     application.cpp \
-    graphicsmesh.cpp \
-    abstractscene.cpp
+    abstractscene.cpp \
+    graphicsobject.cpp \
+    utils.cpp
 
 HEADERS  += mainwindow.h \
     glview.h \
@@ -43,8 +44,9 @@ HEADERS  += mainwindow.h \
     ifractal.h \
     splinevertex.h \
     application.h \
-    graphicsmesh.h \
-    abstractscene.h
+    abstractscene.h \
+    graphicsobject.h \
+    utils.h
 
 FORMS    += \
     mainwindow.ui
@@ -58,4 +60,6 @@ DISTFILES += \
     shaders/simple.vert \
     shaders/simple.frag \
     ../build-CompGr12-Desktop_Qt_5_8_0_GCC_64bit-Debug/shaders/simple.frag \
-    ../build-CompGr12-Desktop_Qt_5_8_0_GCC_64bit-Debug/shaders/simple.vert
+    ../build-CompGr12-Desktop_Qt_5_8_0_GCC_64bit-Debug/shaders/simple.vert \
+    ../build-CompGr12-Desktop_Qt_5_8_0_MinGW_32bit-Debug/shaders/simple.frag \
+    ../build-CompGr12-Desktop_Qt_5_8_0_MinGW_32bit-Debug/shaders/simple.vert

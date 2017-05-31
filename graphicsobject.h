@@ -1,5 +1,5 @@
-#ifndef GRAPHICSMESH_H
-#define GRAPHICSMESH_H
+#ifndef GRAPHICSOBJECT_H
+#define GRAPHICSOBJECT_H
 
 #include <QOpenGLBuffer>
 #include <QOpenGLFunctions>
@@ -38,4 +38,4 @@ private:
     int m_colorAllocated = VERTEX_START * sizeof(float);
 };
 
-#endif // GRAPHICSMESH_H
+#endif // GRAPHICSOBJECT_H

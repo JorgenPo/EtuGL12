@@ -124,6 +124,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionCopy, SIGNAL(triggered(bool)), ui->openGLWidget, SLOT(copyVertices()));
     connect(ui->actionPaste, SIGNAL(triggered(bool)), ui->openGLWidget, SLOT(pasteVertices()));
 
+    connect(ui->clearAction, SIGNAL(triggered(bool)), ui->openGLWidget, SLOT(clearVerteces()));
     //connect(this, SIGNAL(stateChanged(GLView::State)), ui->openGLWidget, SLOT(showSpline(GLView::State)));
     //connect(this, SIGNAL(labChanged(GLView::Labs)), ui->openGLWidget, SLOT(setLab(GLView::Labs)));
 }
@@ -299,4 +300,9 @@ void MainWindow::on_tabWidget_currentChanged(int index)
     default:
         break;
     }
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    ui->openGLWidget->clearVerteces();
 }

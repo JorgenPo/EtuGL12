@@ -19,6 +19,7 @@ public:
     ~GraphicsObject();
 
     void addPoint(QPointF position, QColor color);
+    void clearPoints();
     void render(int primitiveType = GL_LINE_STRIP);
 
 private:

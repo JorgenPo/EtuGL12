@@ -25,6 +25,9 @@ public:
 
     ~Application();
 
+public slots:
+    void clearVerteces();
+
     // QOpenGLWidget interface
 protected:
     void initializeGL() override;
@@ -39,6 +42,7 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
 
 private:
+    void updatePoints();
     bool isSelectedSplineVertex(const QVector3D &vertexPos,
                                 const float &xCoord,
                                 const float &yCoord,

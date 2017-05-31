@@ -32,9 +32,9 @@ void GraphicsObject::addPoint(QPointF position, QColor color)
 {
     m_positions.push_back(position.x());
     m_positions.push_back(position.y());
-    m_colors.push_back(color.red() / 255.0f);
-    m_colors.push_back(color.green() / 255.0f);
-    m_colors.push_back(color.blue() / 255.0f);
+    m_colors.push_back(color.red());
+    m_colors.push_back(color.green());
+    m_colors.push_back(color.blue());
 
     m_positionVBO->bind();
     m_positionVBO->allocate(m_positions.data(), m_positions.size() * sizeof(float));
@@ -82,11 +82,17 @@ void GraphicsObject::addPoint(QPointF position, QColor color)
     qDebug() << m_positions;
 }
 
+void GraphicsObject::clearPoints()
+{
+    m_positions.clear();
+    m_colors.clear();
+}
+
 void GraphicsObject::render(int primitiveType)
 {
     m_vao->bind();
 
-    glDrawArrays(primitiveType, 0, m_positions.size());
+    glDrawArrays(primitiveType, 0, m_positions.size() / 2);
 
     m_vao->release();
 }
